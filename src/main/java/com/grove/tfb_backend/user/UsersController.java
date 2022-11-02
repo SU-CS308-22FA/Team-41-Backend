@@ -44,6 +44,7 @@ public class UsersController {
         return "You have successfully confirmed your account.";
     }
 
+    @CrossOrigin
     @PostMapping("/login")
     public GeneralHttpResponse<Long> login(@RequestBody UserLoginRequest loginRequest){
         GeneralHttpResponse<Long> response = new GeneralHttpResponse<>("200",null);
