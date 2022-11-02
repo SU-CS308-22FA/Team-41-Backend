@@ -5,7 +5,7 @@ import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenService;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.web.bind.annotation.*;
 
-
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1/user")
 public class UsersController {
