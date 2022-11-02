@@ -5,7 +5,7 @@ import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenService;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("api/v1/user")
 public class UsersController {
@@ -44,7 +44,7 @@ public class UsersController {
         return "You have successfully confirmed your account.";
     }
 
-    @CrossOrigin
+
     @PostMapping("/login")
     public GeneralHttpResponse<Long> login(@RequestBody UserLoginRequest loginRequest){
         GeneralHttpResponse<Long> response = new GeneralHttpResponse<>("200",null);
