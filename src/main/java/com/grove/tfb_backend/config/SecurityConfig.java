@@ -40,12 +40,12 @@ public class SecurityConfig {
         httpSecurity
                 .cors()
                 .and()
-                //.csrf().disable()
-                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers( "/**")
                 .permitAll();
-                //.anyRequest().authenticated();
+
 
 
         return httpSecurity.build();
