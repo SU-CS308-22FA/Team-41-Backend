@@ -12,8 +12,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 */
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/team")
@@ -39,11 +40,28 @@ public class TeamsController {
         return response;
     }
 
+    @GetMapping("all")
+    public GeneralHttpResponse<List<Teams>> allTeamInfos(){
+        GeneralHttpResponse<List<Teams>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(teamsService.getAllTeams());
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
     /*
-    @PostConstruct
+    //@PostConstruct
     public void getDataByAPI(){
         try{
-            HttpRequest request = footballAPI.getTeamsAPI();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api-football-v1.p.rapidapi.com/v3/teams?league=203&season=2022"))
+                    .header("X-RapidAPI-Key", footballAPI.apiKey)
+                    .header("X-RapidAPI-Host", footballAPI.apiHost)
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
 
             HttpResponse<String> _response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONObject(_response.body()).getJSONArray("response");

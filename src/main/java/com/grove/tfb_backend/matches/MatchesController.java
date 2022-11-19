@@ -16,6 +16,10 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 */
+
+import java.util.List;
+
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/match")
@@ -24,16 +28,63 @@ public class MatchesController {
     @Autowired
     private final MatchesService matchesService;
 
-
     public MatchesController(MatchesService matchesService) {
         this.matchesService = matchesService;
     }
 
     @GetMapping("{id}")
-    public GeneralHttpResponse<MatchInfo> teamInfo(@PathVariable Long id){
+    public GeneralHttpResponse<MatchInfo> matchInfo(@PathVariable Long id){
         GeneralHttpResponse<MatchInfo> response = new GeneralHttpResponse<>("200",null);
         try{
             response.setReturnObject(matchesService.getMatchInfo(id));
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("all")
+    public GeneralHttpResponse<List<Matches>> allMatchesInfo(){
+        GeneralHttpResponse<List<Matches>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(matchesService.getAllMatches());
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("home/{team_id}")
+    public GeneralHttpResponse<List<Matches>> allHomeMatchesInfo(@PathVariable Long team_id){
+        GeneralHttpResponse<List<Matches>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(matchesService.getAllHomeTeamMatches(team_id));
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("away/{team_id}")
+    public GeneralHttpResponse<List<Matches>> allAwayMatchesInfo(@PathVariable Long team_id){
+        GeneralHttpResponse<List<Matches>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(matchesService.getAllAwayTeamMatches(team_id));
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("all/{team_id}")
+    public GeneralHttpResponse<List<Matches>> allTeamMatchesInfo(@PathVariable Long team_id){
+        GeneralHttpResponse<List<Matches>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(matchesService.getAllTeamMatches(team_id));
         }
         catch (Exception e){
             response.setStatus("400: "+e.getMessage());
@@ -45,7 +96,12 @@ public class MatchesController {
     //@PostConstruct
     public void getDataByAPI(){
         try{
-            HttpRequest request = footballAPI.getMatchesAPI();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api-football-v1.p.rapidapi.com/v3/fixtures?league=203&season=2022"))
+                    .header("X-RapidAPI-Key", footballAPI.apiKey)
+                    .header("X-RapidAPI-Host", footballAPI.apiHost)
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
             HttpResponse<String> _response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONObject(_response.body()).getJSONArray("response");
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -75,14 +131,22 @@ public class MatchesController {
 
                 int goalHome = -1;
                 int goalAway = -1;
+                String result = "none";
 
                 if(isFinished) {
                     JSONObject goals = tmp.getJSONObject("goals");
                     goalHome = goals.getInt("home");
                     goalAway = goals.getInt("away");
+                    if(goalHome == goalAway)
+                        result = "draw";
+                    else if (goalHome > goalAway)
+                        result = "home winner";
+                    else
+                        result = "away winner";
                 }
 
-                MatchInfo M = new MatchInfo(homeTeam, awayTeam, referee, city, stadiumName, dateTime, status, isFinished, goalHome, goalAway);
+                MatchInfo M = new MatchInfo(homeTeam, awayTeam, referee, city, stadiumName, dateTime, status, isFinished, goalHome, goalAway,
+                        result, matchesService.getTeam(homeTeam), matchesService.getTeam(awayTeam));
                 matchesService.addMatch(M);
             }
         }

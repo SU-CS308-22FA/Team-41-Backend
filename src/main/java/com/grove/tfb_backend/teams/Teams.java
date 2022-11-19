@@ -1,14 +1,20 @@
 package com.grove.tfb_backend.teams;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.grove.tfb_backend.matches.Matches;
+import com.grove.tfb_backend.players.Players;
 import com.grove.tfb_backend.teams.TeamDto.TeamInfo;
 import lombok.*;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Teams {
 
     @Id
@@ -22,6 +28,18 @@ public class Teams {
     private String stadiumName;
 
     private String logoURL;
+
+    @OneToMany(mappedBy ="team" ,cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Players> players;
+
+    @OneToMany(mappedBy ="home_team" ,cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Matches> homeMatches;
+
+    @OneToMany(mappedBy ="away_team" ,cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Matches> awayMatches;
 
     public Teams(TeamInfo teamInfoDto) {
         name = teamInfoDto.getName();
