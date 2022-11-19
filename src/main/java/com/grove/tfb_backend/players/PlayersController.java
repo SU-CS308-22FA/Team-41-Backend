@@ -1,17 +1,18 @@
 package com.grove.tfb_backend.players;
 
 import com.grove.tfb_backend.players.PlayerDto.*;
-import com.grove.tfb_backend.footballAPI;
+//import com.grove.tfb_backend.footballAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
-
+/*
 import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+*/
 import java.util.List;
 
 @CrossOrigin
@@ -63,6 +64,7 @@ public class PlayersController {
         return response;
     }
 
+    /*
     //@PostConstruct
     public void getDataByAPI(){
         String[] teamCodes = {"549", "564", "607", "611", "645", "996", "998", "1001", "1002", "1004",
@@ -111,5 +113,5 @@ public class PlayersController {
             }
             catch (Exception e) {}
         }
-    }
+    }*/
 }

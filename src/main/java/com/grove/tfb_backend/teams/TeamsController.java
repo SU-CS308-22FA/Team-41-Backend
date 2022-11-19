@@ -1,17 +1,18 @@
 package com.grove.tfb_backend.teams;
 
-import com.grove.tfb_backend.footballAPI;
+//import com.grove.tfb_backend.footballAPI;
 import com.grove.tfb_backend.teams.TeamDto.*;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
+/*
 import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+*/
 import java.util.List;
 
 @CrossOrigin
@@ -51,6 +52,7 @@ public class TeamsController {
         return response;
     }
 
+    /*
     //@PostConstruct
     public void getDataByAPI(){
         try{
@@ -76,5 +78,5 @@ public class TeamsController {
             }
         }
         catch (Exception e){}
-    }
+    }*/
 }
