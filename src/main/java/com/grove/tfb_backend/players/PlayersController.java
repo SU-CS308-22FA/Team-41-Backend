@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
-
+/*
 import javax.annotation.PostConstruct;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
+*/
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/player")
