@@ -1,5 +1,6 @@
 package com.grove.tfb_backend.matches.MatchDto;
 
+import com.grove.tfb_backend.teams.Teams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,9 @@ import java.time.LocalDateTime;
 @Setter
 public class MatchInfo {
 
-    private String homeTeam;
+    private String homeTeamName;
 
-    private String awayTeam;
+    private String awayTeamName;
 
     private String referee;
 
@@ -32,5 +33,11 @@ public class MatchInfo {
     private int goalHome;
 
     private int goalAway;
+
+    private String result;
+
+    private Teams home_team;
+
+    private Teams away_team;
 
 }

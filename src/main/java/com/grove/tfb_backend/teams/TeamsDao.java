@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeamsDao extends JpaRepository<Teams,Long> {
 
-    boolean existsByName(String name); // sql query yerine geçiyor
+    boolean existsByName(String name);
 
     Teams findTeamById(Long id);
+
+    Teams findTeamsByName(String name);
 }

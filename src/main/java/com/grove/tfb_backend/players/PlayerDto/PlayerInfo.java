@@ -1,5 +1,6 @@
 package com.grove.tfb_backend.players.PlayerDto;
 
+import com.grove.tfb_backend.teams.Teams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,7 @@ public class PlayerInfo {
     private int number;
 
     private String pictureURL;
+
+    private Teams team;
 
 }

@@ -8,9 +8,11 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -26,8 +28,8 @@ public class PlayersController {
     }
 
     @GetMapping("{id}")
-    public GeneralHttpResponse<PlayerInfo> playerInfo(@PathVariable Long id){
-        GeneralHttpResponse<PlayerInfo> response = new GeneralHttpResponse<>("200",null);
+    public GeneralHttpResponse<Players> playerInfo(@PathVariable Long id){
+        GeneralHttpResponse<Players> response = new GeneralHttpResponse<>("200",null);
         try{
             response.setReturnObject(playersService.getPlayerInfo(id));
         }
@@ -37,14 +39,43 @@ public class PlayersController {
         return response;
     }
 
+    @GetMapping("team/{team_id}")
+    public GeneralHttpResponse<List<Players>> playersInfoByTeam(@PathVariable Long team_id){
+        GeneralHttpResponse<List<Players>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(playersService.getPlayersOfTeam(team_id));
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("all")
+    public GeneralHttpResponse<List<Players>> allPlayerInfos(){
+        GeneralHttpResponse<List<Players>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(playersService.getAllPlayers());
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
     //@PostConstruct
     public void getDataByAPI(){
-        String[] teamCodes = {"564", "607", "611", "645", "996", "998", "1001", "1002", "1004", "1005",
-                              "1010", "3563", "3573", "3574", "3575", "3577", "3578", "3589"};
+        String[] teamCodes = {"549", "564", "607", "611", "645", "996", "998", "1001", "1002", "1004",
+                "1005", "1010", "3563", "3573", "3574", "3575", "3577", "3578", "3589"};
 
-        for(String s: teamCodes) {
+        for(String teamCode: teamCodes) {
             try {
-                HttpRequest request = footballAPI.getPlayersAPI(s);
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api-football-v1.p.rapidapi.com/v3/players/squads?team=" + teamCode))
+                        .header("X-RapidAPI-Key", footballAPI.apiKey)
+                        .header("X-RapidAPI-Host", footballAPI.apiHost)
+                        .method("GET", HttpRequest.BodyPublishers.noBody())
+                        .build();;
 
                 HttpResponse<String> _response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
                 JSONArray jsonArray = new JSONObject(_response.body()).getJSONArray("response");
@@ -74,7 +105,7 @@ public class PlayersController {
                     }
                     catch (Exception e) {}
 
-                    PlayerInfo P = new PlayerInfo(name, teamName, age, position, number, pictureURL);
+                    PlayerInfo P = new PlayerInfo(name, teamName, age, position, number, pictureURL, playersService.getTeam(teamName));
                     playersService.addPlayer(P);
                 }
             }

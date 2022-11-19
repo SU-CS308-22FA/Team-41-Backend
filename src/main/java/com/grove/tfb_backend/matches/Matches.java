@@ -1,6 +1,8 @@
 package com.grove.tfb_backend.matches;
 
-import com.grove.tfb_backend.matches.MatchDto.*;
+import com.grove.tfb_backend.matches.MatchDto.MatchInfo;
+import com.grove.tfb_backend.teams.Teams;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,9 +18,9 @@ public class Matches {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String homeTeam;
+    private String homeTeamName;
 
-    private String awayTeam;
+    private String awayTeamName;
 
     private String referee;
 
@@ -36,10 +38,20 @@ public class Matches {
 
     private int goalAway;
 
+    private String result;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Teams home_team;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Teams away_team;
+
 
     public Matches(MatchInfo matchInfoDto) {
-        homeTeam = matchInfoDto.getHomeTeam();
-        awayTeam = matchInfoDto.getAwayTeam();
+        homeTeamName = matchInfoDto.getHomeTeamName();
+        awayTeamName = matchInfoDto.getAwayTeamName();
         referee = matchInfoDto.getReferee();
         city = matchInfoDto.getCity();
         stadiumName = matchInfoDto.getStadiumName();
@@ -48,5 +60,8 @@ public class Matches {
         isFinished = matchInfoDto.isFinished();
         goalHome = matchInfoDto.getGoalHome();
         goalAway = matchInfoDto.getGoalAway();
+        result = matchInfoDto.getResult();
+        home_team = matchInfoDto.getHome_team();
+        away_team = matchInfoDto.getAway_team();
     }
 }
