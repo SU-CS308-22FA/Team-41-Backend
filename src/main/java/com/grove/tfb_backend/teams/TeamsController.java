@@ -1,6 +1,6 @@
 package com.grove.tfb_backend.teams;
 
-import com.grove.tfb_backend.footballAPI;
+//import com.grove.tfb_backend.footballAPI;
 import com.grove.tfb_backend.teams.TeamDto.*;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -39,8 +39,8 @@ public class TeamsController {
         return response;
     }
 
-
-    //@PostConstruct
+    /*
+    @PostConstruct
     public void getDataByAPI(){
         try{
             HttpRequest request = footballAPI.getTeamsAPI();
@@ -60,5 +60,5 @@ public class TeamsController {
             }
         }
         catch (Exception e){}
-    }
+    }*/
 }

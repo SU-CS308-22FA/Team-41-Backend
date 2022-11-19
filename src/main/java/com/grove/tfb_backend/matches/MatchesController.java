@@ -1,6 +1,6 @@
 package com.grove.tfb_backend.matches;
 
-import com.grove.tfb_backend.footballAPI;
+//import com.grove.tfb_backend.footballAPI;
 import com.grove.tfb_backend.matches.MatchDto.*;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -40,6 +40,7 @@ public class MatchesController {
         return response;
     }
 
+    /*
     //@PostConstruct
     public void getDataByAPI(){
         try{
@@ -85,5 +86,5 @@ public class MatchesController {
             }
         }
         catch (Exception e){}
-    }
+    }*/
 }

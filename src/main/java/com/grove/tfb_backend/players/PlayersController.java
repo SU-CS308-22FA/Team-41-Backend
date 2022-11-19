@@ -1,7 +1,7 @@
 package com.grove.tfb_backend.players;
 
 import com.grove.tfb_backend.players.PlayerDto.*;
-import com.grove.tfb_backend.footballAPI;
+//import com.grove.tfb_backend.footballAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -36,7 +36,7 @@ public class PlayersController {
         }
         return response;
     }
-
+    /*
     //@PostConstruct
     public void getDataByAPI(){
         String[] teamCodes = {"564", "607", "611", "645", "996", "998", "1001", "1002", "1004", "1005",
@@ -80,5 +80,5 @@ public class PlayersController {
             }
             catch (Exception e) {}
         }
-    }
+    }*/
 }
