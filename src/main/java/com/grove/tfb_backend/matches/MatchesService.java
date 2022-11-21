@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -87,6 +88,22 @@ public class MatchesService {
         Matches newMatch = new Matches(matchInfoDto);
         Matches matchDb = matchesDao.save(newMatch);
 
+    }
+    public List<Matches> getAllTodaysMatches() {
+        String date = LocalDate.now().toString();
+        List<Matches> matches = matchesDao.findAllByOrderByDateAndTime();
+        List<Matches> res = new ArrayList<>();
+
+        for(Matches m: matches) {
+            String tmp = m.getDateAndTime().toString();
+            if(tmp.substring(0, 10).equals(date)) {
+                res.add(m);
+            }
+        }
+
+        if (res.size() == 0) throw new IllegalStateException("0 MATCHES FOUND!");
+
+        return res;
     }
 
 
