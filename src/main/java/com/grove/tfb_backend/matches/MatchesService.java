@@ -24,17 +24,12 @@ public class MatchesService {
         this.refereeDao = refereeDao;
     }
 
-    public MatchInfo getMatchInfo(Long id) {
+    public Matches getMatchInfo(Long id) {
         Matches match = matchesDao.findMatchById(id);
 
         if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
 
-        return new MatchInfo(match.getHomeTeamName(), match.getAwayTeamName(),
-                match.getReferee(), match.getCity(),
-                match.getStadiumName(), match.getDateAndTime(),
-                match.getStatus(), match.isFinished(),
-                match.getGoalHome(), match.getGoalAway(), match.getResult(),
-                match.getHome_team(), match.getAway_team(),match.getRefereeId());
+        return match;
     }
 
     public Teams getTeam(String teamName) {
