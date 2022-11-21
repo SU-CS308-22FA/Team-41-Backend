@@ -1,16 +1,17 @@
 package com.grove.tfb_backend.user;
 
 
+import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.user.userDto.UserSignupDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,12 +34,25 @@ public class Users {
 
     private boolean isActive;
 
-    public Users(UserSignupDto signupDto){
+    @ManyToOne
+    private Teams fanTeam;
+
+    private LocalDate birthdate;
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Teams> favoriteTeams;
+
+
+    public Users(UserSignupDto signupDto,Teams fanT){
         name = signupDto.getName();
         mail = signupDto.getMail();
         gender = signupDto.getGender();
         password = signupDto.getPassword();
+        birthdate = signupDto.getBirthdate();
         isActive = false;
+        favoriteTeams = new ArrayList<>();
+        favoriteTeams.add(fanT);
+        fanTeam = fanT;
 
     }
 

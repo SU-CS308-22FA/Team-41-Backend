@@ -1,15 +1,14 @@
 package com.grove.tfb_backend.referee;
 
 
+import com.grove.tfb_backend.matches.Matches;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -27,4 +26,7 @@ public class Referee {
     private Double rating;
 
     private Long totalVote;
+
+    @OneToMany(mappedBy = "refereeId",cascade = CascadeType.ALL)
+    private List<Matches> matches;
 }
