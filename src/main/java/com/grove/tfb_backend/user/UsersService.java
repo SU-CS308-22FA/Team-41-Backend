@@ -9,6 +9,7 @@ import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenDao;
 import com.grove.tfb_backend.user.confirmationToken.confirmationTokenDto.ConfirmationTokenDto;
 import com.grove.tfb_backend.user.userDto.*;
 import org.apache.catalina.User;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -139,6 +140,12 @@ public class UsersService {
 
         user.setFavoriteTeams(currentList);
 
+
+    }
+
+
+    @Scheduled(cron = "0 0 8 ? * * *",zone = "Europe/Istanbul")  // at 8am every day.
+    public void sendNotificationBeforeMatches(){
 
     }
 }

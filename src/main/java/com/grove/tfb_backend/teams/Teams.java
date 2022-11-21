@@ -42,6 +42,9 @@ public class Teams {
     @JsonIgnore
     private List<Matches> awayMatches;
 
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "favoriteTeams")
+    private List<Users> users;
+
 
     public Teams(TeamInfo teamInfoDto) {
         name = teamInfoDto.getName();
