@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,4 +19,8 @@ public class UserInfo {
     private String mail;
 
     private String gender;
+
+    private LocalDate birthdate;
+
+    private String fanTeam;
 }

@@ -1,5 +1,6 @@
 package com.grove.tfb_backend.matches.MatchDto;
 
+import com.grove.tfb_backend.referee.Referee;
 import com.grove.tfb_backend.teams.Teams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,5 +40,7 @@ public class MatchInfo {
     private Teams home_team;
 
     private Teams away_team;
+
+    private Referee refereeId;
 
 }

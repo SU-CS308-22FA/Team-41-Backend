@@ -1,9 +1,12 @@
 package com.grove.tfb_backend.user;
 
 
+import com.grove.tfb_backend.teams.TeamDto.TeamInfo;
 import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenService;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -108,6 +111,32 @@ public class UsersController {
         catch (Exception e){
             response.setStatus("400");
             response.setReturnObject(e.getMessage());
+        }
+        return response;
+    }
+
+
+    @PostMapping("favTeams")
+    public GeneralHttpResponse<String> addFavTeam(@RequestBody FavTeamAdd body){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
+        try{
+            usersService.addFavTeam(body);
+        }
+        catch (Exception e){
+            response.setStatus("400");
+            response.setReturnObject(e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("favTeams/{id}")
+    public GeneralHttpResponse<List<TeamInfo>> getFavTeams(@PathVariable Long id){
+        GeneralHttpResponse<List<TeamInfo>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(usersService.getFavTeams(id));
+        }
+        catch (Exception e){
+            response.setStatus("400: "+ e.getMessage());
         }
         return response;
     }

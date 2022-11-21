@@ -1,6 +1,7 @@
 package com.grove.tfb_backend.matches;
 
 import com.grove.tfb_backend.matches.MatchDto.MatchInfo;
+import com.grove.tfb_backend.referee.Referee;
 import com.grove.tfb_backend.teams.Teams;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -48,6 +49,9 @@ public class Matches {
     @ManyToOne(fetch = FetchType.LAZY)
     private Teams away_team;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Referee refereeId;
+
 
     public Matches(MatchInfo matchInfoDto) {
         homeTeamName = matchInfoDto.getHomeTeamName();
@@ -63,5 +67,6 @@ public class Matches {
         result = matchInfoDto.getResult();
         home_team = matchInfoDto.getHome_team();
         away_team = matchInfoDto.getAway_team();
+        refereeId = matchInfoDto.getRefereeId();
     }
 }

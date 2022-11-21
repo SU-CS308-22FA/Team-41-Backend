@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface RefereeDao extends JpaRepository<Referee,Long> {
 
     Referee findRefereeById(Long id);
+    Referee findRefereeByName(String name);
 }

@@ -146,7 +146,7 @@ public class MatchesController {
                 }
 
                 MatchInfo M = new MatchInfo(homeTeam, awayTeam, referee, city, stadiumName, dateTime, status, isFinished, goalHome, goalAway,
-                        result, matchesService.getTeam(homeTeam), matchesService.getTeam(awayTeam));
+                        result, matchesService.getTeam(homeTeam), matchesService.getTeam(awayTeam), matchesService.getReferee(referee));
                 matchesService.addMatch(M);
             }
         }

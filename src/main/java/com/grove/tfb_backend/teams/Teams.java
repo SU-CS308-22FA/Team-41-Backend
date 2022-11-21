@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.grove.tfb_backend.matches.Matches;
 import com.grove.tfb_backend.players.Players;
 import com.grove.tfb_backend.teams.TeamDto.TeamInfo;
+import com.grove.tfb_backend.user.Users;
 import lombok.*;
 import javax.persistence.*;
 import java.util.List;
@@ -19,7 +20,7 @@ public class Teams {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -41,10 +42,16 @@ public class Teams {
     @JsonIgnore
     private List<Matches> awayMatches;
 
+
     public Teams(TeamInfo teamInfoDto) {
         name = teamInfoDto.getName();
         city = teamInfoDto.getCity();
         stadiumName = teamInfoDto.getStadiumName();
         logoURL = teamInfoDto.getLogoURL();
+    }
+
+
+    public boolean equals(Teams team) {
+        return id.equals(team.getId());
     }
 }
