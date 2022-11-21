@@ -92,6 +92,18 @@ public class MatchesController {
         return response;
     }
 
+    @GetMapping("today")
+    public GeneralHttpResponse<List<Matches>> allTeamMatchesInfo(){
+        GeneralHttpResponse<List<Matches>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(matchesService.getAllTodaysMatches());
+        }
+        catch (Exception e){
+            response.setStatus("400: "+e.getMessage());
+        }
+        return response;
+    }
+
     /*
     //@PostConstruct
     public void getDataByAPI(){

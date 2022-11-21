@@ -1,6 +1,8 @@
 package com.grove.tfb_backend.user;
 
 import com.grove.tfb_backend.mailSender.MailService;
+import com.grove.tfb_backend.matches.Matches;
+import com.grove.tfb_backend.matches.MatchesService;
 import com.grove.tfb_backend.teams.TeamDto.TeamInfo;
 import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.teams.TeamsDao;
@@ -8,7 +10,6 @@ import com.grove.tfb_backend.user.confirmationToken.ConfirmationToken;
 import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenDao;
 import com.grove.tfb_backend.user.confirmationToken.confirmationTokenDto.ConfirmationTokenDto;
 import com.grove.tfb_backend.user.userDto.*;
-import org.apache.catalina.User;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +24,15 @@ public class UsersService {
     private final MailService mailService;
     private final TeamsDao teamsDao;
 
+    private final MatchesService matchesService;
+
     private final ConfirmationTokenDao confirmationTokenDao;
 
-    public UsersService(UsersDao usersDao, MailService mailService, TeamsDao teamsDao, ConfirmationTokenDao confirmationTokenDao) {
+    public UsersService(UsersDao usersDao, MailService mailService, TeamsDao teamsDao, MatchesService matchesService, ConfirmationTokenDao confirmationTokenDao) {
         this.usersDao = usersDao;
         this.mailService = mailService;
         this.teamsDao = teamsDao;
+        this.matchesService = matchesService;
         this.confirmationTokenDao = confirmationTokenDao;
     }
 
@@ -146,6 +150,9 @@ public class UsersService {
 
     @Scheduled(cron = "0 0 8 ? * * *",zone = "Europe/Istanbul")  // at 8am every day.
     public void sendNotificationBeforeMatches(){
+        List<Matches> todaysMatches = matchesService.getAllTodaysMatches();
 
+
+        mailService.sendDailyMatchNotifications(todaysMatches);
     }
 }
