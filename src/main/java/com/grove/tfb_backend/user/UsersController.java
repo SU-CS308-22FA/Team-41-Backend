@@ -2,6 +2,7 @@ package com.grove.tfb_backend.user;
 
 
 import com.grove.tfb_backend.teams.TeamDto.TeamInfo;
+import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenService;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.web.bind.annotation.*;
@@ -130,8 +131,8 @@ public class UsersController {
     }
 
     @GetMapping("favTeams/{id}")
-    public GeneralHttpResponse<List<TeamInfo>> getFavTeams(@PathVariable Long id){
-        GeneralHttpResponse<List<TeamInfo>> response = new GeneralHttpResponse<>("200",null);
+    public GeneralHttpResponse<List<Teams>> getFavTeams(@PathVariable Long id){
+        GeneralHttpResponse<List<Teams>> response = new GeneralHttpResponse<>("200",null);
         try{
             response.setReturnObject(usersService.getFavTeams(id));
         }

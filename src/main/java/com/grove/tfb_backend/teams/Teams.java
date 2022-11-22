@@ -43,6 +43,7 @@ public class Teams {
     private List<Matches> awayMatches;
 
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "favoriteTeams")
+    @JsonIgnore
     private List<Users> users;
 
 

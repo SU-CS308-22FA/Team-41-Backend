@@ -43,28 +43,16 @@ public class MailService {
     }
 
 
-    public void sendDailyMatchNotifications(List<Matches> todaysMatches) {
+    public void sendDailyMatchNotifications(String[] mailList,String text) {
 
-        for (Matches m:todaysMatches){
 
-            List<Users> homeTeamUsers = m.getHome_team().getUsers();
-            List<Users> awayTeamUsers = m.getAway_team().getUsers();
-            homeTeamUsers.addAll(awayTeamUsers);
-            Set<String> mails = homeTeamUsers.stream()
-                                    .map(Users::getMail)
-                                    .collect(Collectors.toSet());
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("emrhn2001@gmail.com");
+        mailMessage.setSubject("TFP Match Notification");
+        mailMessage.setText(text);
+        mailMessage.setTo(mailList);
+        mailSender.send(mailMessage);
 
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom("emrhn2001@gmail.com");
-            mailMessage.setSubject("TFP Match Notification");
-            mailMessage.setText("One of your favorite teams has a match today. Here is the details:\n\n"+
-                    m.getHomeTeamName()+"  -  "+ m.getAwayTeamName() + "\n\n"+
-                    "Referee: " + m.getReferee() + "\n\n" +
-                    "Time   : " + m.getDateAndTime());
-            String[] mailsArray = mails.stream().toArray(String[]::new);
-            mailMessage.setTo(mailsArray);
-            mailSender.send(mailMessage);
 
-        }
     }
 }

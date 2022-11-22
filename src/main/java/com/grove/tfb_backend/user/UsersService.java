@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersService {
@@ -111,16 +113,15 @@ public class UsersService {
         user.setPassword(request.getPassword());
     }
 
-    public List<TeamInfo> getFavTeams(Long id) {
+    public List<Teams> getFavTeams(Long id) {
         Users user = usersDao.findUserById(id);
 
         if (user == null) throw new IllegalStateException("USER NOT FOUND!");
-        List<Teams> favTeams = user.getFavoriteTeams();
-        List<TeamInfo> toBeReturned = new ArrayList<>();
+        /*List<TeamInfo> toBeReturned = new ArrayList<>();
         for(Teams t: favTeams){
             toBeReturned.add(new TeamInfo(t.getName(),t.getCity(),t.getStadiumName(),t.getLogoURL()));
-        }
-        return toBeReturned;
+        }*/
+        return user.getFavoriteTeams();
     }
 
     @Transactional
@@ -148,11 +149,31 @@ public class UsersService {
     }
 
 
-    @Scheduled(cron = "0 0 8 ? * * *",zone = "Europe/Istanbul")  // at 8am every day.
+    @Transactional
+    @Scheduled(cron = "0 0 8 * * *",zone = "Europe/Istanbul")  // at 8am every day.
     public void sendNotificationBeforeMatches(){
         List<Matches> todaysMatches = matchesService.getAllTodaysMatches();
 
+        for (Matches m:todaysMatches) {
 
-        mailService.sendDailyMatchNotifications(todaysMatches);
+            List<Users> homeTeamUsers = m.getHome_team().getUsers();
+            List<Users> awayTeamUsers = m.getAway_team().getUsers();
+            homeTeamUsers.addAll(awayTeamUsers);
+            Set<String> mails = homeTeamUsers.stream()
+                    .map(Users::getMail)
+                    .collect(Collectors.toSet());
+
+            String[] mailsArray = mails.stream().toArray(String[]::new);
+            String text = "One of your favorite teams has a match today. Here is the details:\n\n"+
+                    m.getHomeTeamName()+"  -  "+ m.getAwayTeamName() + "\n\n"+
+                    "Referee: " + m.getReferee() + "\n\n" +
+                    "Time   : " + m.getDateAndTime();
+
+            mailService.sendDailyMatchNotifications(mailsArray,text);
+
+        }
+
+
+
     }
 }
