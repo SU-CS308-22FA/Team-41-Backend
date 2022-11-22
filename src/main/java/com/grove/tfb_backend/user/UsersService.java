@@ -59,7 +59,7 @@ public class UsersService {
 
     }
 
-    public Long login(UserLoginRequest loginRequest) {
+    public LoginResponse login(UserLoginRequest loginRequest) {
 
         Users user = usersDao.findUserByMail(loginRequest.getMail());
 
@@ -67,7 +67,7 @@ public class UsersService {
         if (!user.getPassword().equals(loginRequest.getPassword())) throw new IllegalStateException("WRONG PASSWORD!");
         if(!user.isActive()) throw new IllegalStateException("ACCOUNT IS NOT ACTIVE!");
 
-        return user.getId();
+        return new LoginResponse(user.getId(), user.isAdmin());
         // JWT will be returned later.
     }
 

@@ -34,6 +34,8 @@ public class Users {
 
     private boolean isActive;
 
+    private boolean isAdmin;
+
     @ManyToOne
     private Teams fanTeam;
 
@@ -49,6 +51,7 @@ public class Users {
         gender = signupDto.getGender();
         password = signupDto.getPassword();
         birthdate = signupDto.getBirthdate();
+        isAdmin = false;
         isActive = false;
         favoriteTeams = new ArrayList<>();
         favoriteTeams.add(fanT);

@@ -50,8 +50,8 @@ public class UsersController {
 
 
     @PostMapping("/login")
-    public GeneralHttpResponse<Long> login(@RequestBody UserLoginRequest loginRequest){
-        GeneralHttpResponse<Long> response = new GeneralHttpResponse<>("200",null);
+    public GeneralHttpResponse<LoginResponse> login(@RequestBody UserLoginRequest loginRequest){
+        GeneralHttpResponse<LoginResponse> response = new GeneralHttpResponse<>("200",null);
         try{
             response.setReturnObject(usersService.login(loginRequest));
         }
