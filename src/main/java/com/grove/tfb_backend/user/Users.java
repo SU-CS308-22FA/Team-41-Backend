@@ -34,6 +34,7 @@ public class Users {
 
     private boolean isActive;
 
+    @Column(nullable = true)
     private boolean isAdmin;
 
     @ManyToOne
