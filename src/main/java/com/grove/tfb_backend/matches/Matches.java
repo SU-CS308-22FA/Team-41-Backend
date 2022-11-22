@@ -49,6 +49,7 @@ public class Matches {
     @ManyToOne(fetch = FetchType.LAZY)
     private Teams away_team;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Referee refereeId;
 

@@ -145,7 +145,33 @@ public class UsersService {
 
         user.setFavoriteTeams(currentList);
 
+    }
 
+    @Transactional
+    public void deleteFavTeam(FavTeamAdd body){
+        Users user = usersDao.findUserById(body.getUserId());
+        Teams team = teamsDao.findTeamById(body.getTeamId());
+
+        if (user == null) throw new IllegalStateException("USER NOT FOUND!");
+        if (team == null) throw new IllegalStateException("TEAM NOT FOUND!");
+
+        List<Teams> currentList = user.getFavoriteTeams();
+
+        int index = -1;
+        int iterator = 0;
+        for(Teams t: currentList){
+            if (t.equals(team)){
+                index = iterator;
+                break;
+            }
+            iterator++;
+        }
+
+        if(index == -1) throw new IllegalStateException(team.getName() +" DOES NOT EXIST IN YOUR FAVORITE LIST!");
+
+        currentList.remove(index);
+
+        user.setFavoriteTeams(currentList);
     }
 
 

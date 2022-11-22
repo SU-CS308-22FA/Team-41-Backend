@@ -142,5 +142,18 @@ public class UsersController {
         return response;
     }
 
+    @DeleteMapping("/favTeams")
+    public GeneralHttpResponse<String> deleteFavTeam(@RequestBody FavTeamAdd body){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
+        try{
+            usersService.deleteFavTeam(body);
+        }
+        catch (Exception e){
+            response.setStatus("400");
+            response.setReturnObject(e.getMessage());
+        }
+        return response;
+    }
+
 
 }
