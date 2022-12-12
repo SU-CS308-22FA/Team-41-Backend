@@ -26,7 +26,7 @@ public class RefereeService {
 
     @Transactional
     public void voteReferee(VoteRequest vote) {
-        Referee referee = refereeDao.findRefereeById(vote.getId());
+        Referee referee = refereeDao.findRefereeByName(vote.getName());
 
         if (referee == null) throw new IllegalStateException("REFEREE NOT FOUND!");
 

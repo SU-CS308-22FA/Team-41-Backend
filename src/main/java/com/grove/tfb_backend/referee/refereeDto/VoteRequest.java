@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class VoteRequest {
 
-    private Long id;
+    private String name;
 
     private Double rate;
 }
