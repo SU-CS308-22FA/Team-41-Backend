@@ -1,24 +1,23 @@
-package com.grove.tfb_backend.matches;
+package com.grove.tfb_backend.matches.MatchDto;
+
 
 import com.grove.tfb_backend.comment.Comment;
-import com.grove.tfb_backend.matches.MatchDto.MatchInfo;
-import com.grove.tfb_backend.referee.Referee;
-import com.grove.tfb_backend.teams.Teams;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import javax.persistence.*;
+import com.grove.tfb_backend.comment.commentDto.CommentResponse;
+import com.grove.tfb_backend.matches.Matches;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Matches {
+public class SingleMatchResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String homeTeamName;
@@ -43,24 +42,10 @@ public class Matches {
 
     private String result;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Teams home_team;
+    private List<CommentResponse> comments;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Teams away_team;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Referee refereeId;
-
-    @OneToMany(mappedBy = "match",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Comment> comments;
-
-
-    public Matches(MatchInfo matchInfoDto) {
+    public SingleMatchResponse(Matches matchInfoDto){
+        id = matchInfoDto.getId();
         homeTeamName = matchInfoDto.getHomeTeamName();
         awayTeamName = matchInfoDto.getAwayTeamName();
         referee = matchInfoDto.getReferee();
@@ -72,10 +57,7 @@ public class Matches {
         goalHome = matchInfoDto.getGoalHome();
         goalAway = matchInfoDto.getGoalAway();
         result = matchInfoDto.getResult();
-        home_team = matchInfoDto.getHome_team();
-        away_team = matchInfoDto.getAway_team();
-        refereeId = matchInfoDto.getRefereeId();
+        comments = CommentResponse.fromCommentList(matchInfoDto.getComments());
     }
-
 
 }

@@ -33,8 +33,8 @@ public class MatchesController {
     }
 
     @GetMapping("{id}")
-    public GeneralHttpResponse<Matches> matchInfo(@PathVariable Long id){
-        GeneralHttpResponse<Matches> response = new GeneralHttpResponse<>("200",null);
+    public GeneralHttpResponse<SingleMatchResponse> matchInfo(@PathVariable Long id){
+        GeneralHttpResponse<SingleMatchResponse> response = new GeneralHttpResponse<>("200",null);
         try{
             response.setReturnObject(matchesService.getMatchInfo(id));
         }

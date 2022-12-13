@@ -1,5 +1,6 @@
 package com.grove.tfb_backend.comment;
 
+import com.grove.tfb_backend.matches.Matches;
 import com.grove.tfb_backend.user.Users;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +27,8 @@ public class Comment {
     private LocalDateTime dop; //date of post
 
     private String body;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Matches match;
 
 }

@@ -3,10 +3,8 @@ package com.grove.tfb_backend.comment;
 
 import com.grove.tfb_backend.comment.commentDto.CommentRequest;
 import com.grove.tfb_backend.comment.commentDto.CommentResponse;
-import com.grove.tfb_backend.feedback.Feedback;
-import com.grove.tfb_backend.feedback.FeedbackDao;
-import com.grove.tfb_backend.feedback.feedbackDto.FeedbackRequest;
-import com.grove.tfb_backend.feedback.feedbackDto.FeedbackResponse;
+import com.grove.tfb_backend.matches.Matches;
+import com.grove.tfb_backend.matches.MatchesDao;
 import com.grove.tfb_backend.user.Users;
 import com.grove.tfb_backend.user.UsersDao;
 import org.springframework.stereotype.Service;
@@ -22,9 +20,12 @@ public class CommentService {
     private final CommentDao commentDao;
     private final UsersDao usersDao;
 
-    public CommentService(CommentDao commentDao, UsersDao usersDao) {
+    private final MatchesDao matchesDao;
+
+    public CommentService(CommentDao commentDao, UsersDao usersDao, MatchesDao matchesDao) {
         this.commentDao = commentDao;
         this.usersDao = usersDao;
+        this.matchesDao = matchesDao;
     }
 
     @Transactional
@@ -33,10 +34,15 @@ public class CommentService {
 
         if (user == null) throw new IllegalStateException("USER NOT FOUND!");
 
+        Matches match = matchesDao.findMatchById(comment.getMatchId());
+
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
         Comment commentDb = new Comment();
         commentDb.setUser(user);
         commentDb.setDop(LocalDateTime.now());
         commentDb.setBody(comment.getBody());
+        commentDb.setMatch(match);
 
         commentDao.save(commentDb);
 

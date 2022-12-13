@@ -16,7 +16,7 @@ public class CommentRequest {
 
     private Long userId;
 
-    private LocalDateTime dop;
+    private Long matchId;
 
     private String body;
 }

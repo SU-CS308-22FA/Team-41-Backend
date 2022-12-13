@@ -28,12 +28,12 @@ public class MatchesService {
         this.refereeDao = refereeDao;
     }
 
-    public Matches getMatchInfo(Long id) {
+    public SingleMatchResponse getMatchInfo(Long id) {
         Matches match = matchesDao.findMatchById(id);
 
         if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
 
-        return match;
+        return new SingleMatchResponse(match);
     }
 
     public Teams getTeam(String teamName) {
