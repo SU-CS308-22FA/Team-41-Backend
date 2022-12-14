@@ -167,8 +167,8 @@ public class UsersController {
     }
 
     @GetMapping("/{adminId}/users")
-    public GeneralHttpResponse<List<UserInfo>> getUsers(@PathVariable Long adminId) {
-        GeneralHttpResponse<List<UserInfo>> response = new GeneralHttpResponse<>("200",null);
+    public GeneralHttpResponse<List<UserInfoPublic>> getUsers(@PathVariable Long adminId) {
+        GeneralHttpResponse<List<UserInfoPublic>> response = new GeneralHttpResponse<>("200",null);
         try{
             response.setReturnObject(usersService.getUsersIfAdmin(adminId));
         }
