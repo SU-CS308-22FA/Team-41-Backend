@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 */
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -30,6 +31,19 @@ public class MatchesController {
 
     public MatchesController(MatchesService matchesService) {
         this.matchesService = matchesService;
+    }
+
+    @PostMapping("/add_match")
+    public GeneralHttpResponse<String> addMatchByAdmin(@RequestBody AddMatch newMatch) {
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
+        try{
+            matchesService.addMatchByAdmin(newMatch);
+        }
+        catch (Exception e){
+            response.setStatus("400");
+            response.setReturnObject(e.getMessage());
+        }
+        return response;
     }
 
     @GetMapping("{id}")
