@@ -205,13 +205,29 @@ public class UsersService {
 
     public Integer getCount() {
         List<Users> users = usersDao.findAll();
-        return users.size();
+        Integer count = users.size();
+        return count;
+    }
+
+    public Integer getActiveCount() {
+        List<Users> users = usersDao.findAllByActiveIs(true);
+        Integer count = users.size();
+        return count;
+    }
+
+    List<UserInfo> convertUsers2UsersInfo(List<Users> users) {
+        List<UserInfo> userInfos = new ArrayList<>();
+        for(Users u: users) {
+            UserInfo newU = new UserInfo(u.getName(), u.getMail(), u.getGender(), u.getBirthdate(), u.getFanTeam().getName());
+            userInfos.add(newU);
+        }
+        return userInfos;
     }
 
     public List<UserInfo> getUsersIfAdmin(Long adminId) {
         Users admin = usersDao.findUserById(adminId);
         if(admin.isAdmin())
-            return usersDao.findAllInfo();
+            return convertUsers2UsersInfo(usersDao.findAll());
         return null;
     }
 
@@ -224,6 +240,7 @@ public class UsersService {
         Users user = usersDao.findUserById(userId);
         if(user == null) throw new IllegalStateException("USER NOT FOUND!");
         if(user.isAdmin()) throw new IllegalStateException("YOU CANNOT BAN AN ADMIN!");
+        if(!user.isActive()) throw new IllegalStateException("ALREADY BANNED!");
 
         user.setActive(false);
     }
