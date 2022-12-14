@@ -202,4 +202,30 @@ public class UsersService {
 
 
     }
+
+    public Integer getCount() {
+        List<Users> users = usersDao.findAll();
+        return users.size();
+    }
+
+    public List<UserInfo> getUsersIfAdmin(Long adminId) {
+        Users admin = usersDao.findUserById(adminId);
+        if(admin.isAdmin())
+            return usersDao.findAllInfo();
+        return null;
+    }
+
+    @Transactional
+    public void banUser(Long adminId, Long userId) {
+        Users admin = usersDao.findUserById(adminId);
+        if(admin == null)  throw new IllegalStateException("ADMIN USER NOT FOUND!");
+        if(!admin.isAdmin()) throw new IllegalStateException("NO PERMISSION!");
+
+        Users user = usersDao.findUserById(userId);
+        if(user == null) throw new IllegalStateException("USER NOT FOUND!");
+        if(user.isAdmin()) throw new IllegalStateException("YOU CANNOT BAN AN ADMIN!");
+
+        user.setActive(false);
+    }
+
 }
