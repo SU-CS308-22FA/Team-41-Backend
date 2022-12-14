@@ -209,16 +209,16 @@ public class UsersService {
         return count;
     }
 
-    List<UserInfo> convertUsers2UsersInfo(List<Users> users) {
-        List<UserInfo> userInfos = new ArrayList<>();
+    List<UserInfoPublic> convertUsers2UsersInfo(List<Users> users) {
+        List<UserInfoPublic> userInfos = new ArrayList<>();
         for(Users u: users) {
-            UserInfo newU = new UserInfo(u.getName(), u.getMail(), u.getGender(), u.getBirthdate(), u.getFanTeam().getName());
+            UserInfoPublic newU = new UserInfoPublic(u.getId(), u.getName(), u.getMail(), u.getGender(), u.getBirthdate(), u.getFanTeam().getName());
             userInfos.add(newU);
         }
         return userInfos;
     }
 
-    public List<UserInfo> getUsersIfAdmin(Long adminId) {
+    public List<UserInfoPublic> getUsersIfAdmin(Long adminId) {
         Users admin = usersDao.findUserById(adminId);
         if(admin.isAdmin())
             return convertUsers2UsersInfo(usersDao.findAll());
