@@ -1,7 +1,6 @@
 package com.grove.tfb_backend.user;
 
 
-import com.grove.tfb_backend.teams.TeamDto.TeamInfo;
 import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenService;
 import com.grove.tfb_backend.user.userDto.*;
@@ -155,5 +154,41 @@ public class UsersController {
         return response;
     }
 
+    @GetMapping("/count")
+    public GeneralHttpResponse<Integer> getUserCount() {
+        GeneralHttpResponse<Integer> response = new GeneralHttpResponse<>("200",0);
+        try{
+            response.setReturnObject(usersService.getCount());
+        }
+        catch (Exception e){
+            response.setStatus("400: "+ e.getMessage());
+        }
+        return response;
+    }
 
+    @GetMapping("/{adminId}/users")
+    public GeneralHttpResponse<List<UserInfo>> getUsers(@PathVariable Long adminId) {
+        GeneralHttpResponse<List<UserInfo>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(usersService.getUsersIfAdmin(adminId));
+        }
+        catch (Exception e){
+            response.setStatus("400: "+ e.getMessage());
+        }
+        return response;
+    }
+
+    @PutMapping("/{adminId}/ban/{userId}")
+    public GeneralHttpResponse<String> updateUser(@PathVariable Long adminId,@PathVariable Long userId){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200","USER INFORMATION UPDATED SUCCESSFULLY!");
+        try{
+            usersService.banUser(adminId, userId);
+        }
+        catch (Exception e){
+            response.setReturnObject(e.getMessage());
+            response.setStatus("400");
+
+        }
+        return response;
+    }
 }
