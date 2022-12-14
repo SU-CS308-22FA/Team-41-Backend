@@ -15,5 +15,4 @@ public interface UsersDao extends JpaRepository<Users,Long> {
 
     Users findUserById(Long id);
 
-    List<Users> findAllByActiveIs(boolean isActive);
 }

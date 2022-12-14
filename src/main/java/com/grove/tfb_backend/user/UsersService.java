@@ -209,12 +209,6 @@ public class UsersService {
         return count;
     }
 
-    public Integer getActiveCount() {
-        List<Users> users = usersDao.findAllByActiveIs(true);
-        Integer count = users.size();
-        return count;
-    }
-
     List<UserInfo> convertUsers2UsersInfo(List<Users> users) {
         List<UserInfo> userInfos = new ArrayList<>();
         for(Users u: users) {

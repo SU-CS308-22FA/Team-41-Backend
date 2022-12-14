@@ -166,18 +166,6 @@ public class UsersController {
         return response;
     }
 
-    @GetMapping("/active_count")
-    public GeneralHttpResponse<Integer> getActiveUserCount() {
-        GeneralHttpResponse<Integer> response = new GeneralHttpResponse<>("200",0);
-        try{
-            response.setReturnObject(usersService.getActiveCount());
-        }
-        catch (Exception e){
-            response.setStatus("400: "+ e.getMessage());
-        }
-        return response;
-    }
-
     @GetMapping("/{adminId}/users")
     public GeneralHttpResponse<List<UserInfo>> getUsers(@PathVariable Long adminId) {
         GeneralHttpResponse<List<UserInfo>> response = new GeneralHttpResponse<>("200",null);
