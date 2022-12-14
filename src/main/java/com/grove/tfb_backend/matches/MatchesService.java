@@ -5,13 +5,13 @@ import com.grove.tfb_backend.referee.Referee;
 import com.grove.tfb_backend.referee.RefereeDao;
 import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.teams.TeamsDao;
+import com.grove.tfb_backend.user.Users;
+import com.grove.tfb_backend.user.UsersDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -19,12 +19,13 @@ public class MatchesService {
 
     private final MatchesDao matchesDao;
     private final TeamsDao teamsDao;
-
+    private final UsersDao usersDao;
     private final RefereeDao refereeDao;
 
-    public MatchesService(MatchesDao matchesDao, TeamsDao teamsDao, RefereeDao refereeDao) {
+    public MatchesService(MatchesDao matchesDao, TeamsDao teamsDao, UsersDao usersDao, RefereeDao refereeDao) {
         this.matchesDao = matchesDao;
         this.teamsDao = teamsDao;
+        this.usersDao = usersDao;
         this.refereeDao = refereeDao;
     }
 
@@ -80,6 +81,34 @@ public class MatchesService {
         if (matches.size() == 0) throw new IllegalStateException("0 MATCHES FOUND!");
 
         return matches;
+    }
+
+    public void addMatchByAdmin(AddMatch newMatch) {
+        Users admin = usersDao.findUserById(newMatch.getUserId());
+        if(admin == null)  throw new IllegalStateException("ADMIN USER NOT FOUND!");
+        if(!admin.isAdmin()) throw new IllegalStateException("NO PERMISSION!");
+
+        Teams home = teamsDao.findTeamById(newMatch.getHomeId());
+        if(home == null) throw new IllegalStateException("HOME TEAM NOT FOUND!");
+
+        Teams away = teamsDao.findTeamById(newMatch.getAwayId());
+        if(away == null) throw new IllegalStateException("AWAY TEAM NOT FOUND!");
+
+        Referee ref = refereeDao.findRefereeById(newMatch.getRefereeId());
+        if(ref == null) throw new IllegalStateException("REFEREE NOT FOUND!");
+
+        String result;
+        if(newMatch.getHomeGoals() == newMatch.getAwayGoals())
+            result = "draw";
+        else if(newMatch.getHomeGoals() > newMatch.getAwayGoals())
+            result = "home winner";
+        else
+            result = "away winner";
+
+        MatchInfo match = new MatchInfo(home.getName(), away.getName(), ref.getName(), home.getCity(),
+                                        home.getStadiumName(), newMatch.getDate(), "Match Finished", true,
+                                        newMatch.getHomeGoals(), newMatch.getAwayGoals(), result, home, away, ref);
+        addMatch(match);
     }
 
     @Transactional
