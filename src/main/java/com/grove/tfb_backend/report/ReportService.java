@@ -32,6 +32,8 @@ public class ReportService {
         if (!usersDao.existsById(reportRequest.getReporterId())) throw new IllegalStateException("REPORTER NOT FOUND!");
         if (!usersDao.existsById(reportRequest.getReportedUserId())) throw new IllegalStateException("REPORTED USER NOT FOUND!");
         if (!commentDao.existsById(reportRequest.getCommentId())) throw new IllegalStateException("COMMENT NOT FOUND!");
+        if (reportDao.findReportByReporterIdAndCommentId(reportRequest.getReporterId(), reportRequest.getCommentId()) != null) throw new IllegalStateException("ALREADY REPORTED BY YOU!");
+        if(reportRequest.getReporterId().equals(reportRequest.getReportedUserId())) throw new IllegalStateException("YOU CANNOT REPORT YOUR OWN COMMENT!");
 
         Report report = new Report(reportRequest);
         reportDao.save(report);
