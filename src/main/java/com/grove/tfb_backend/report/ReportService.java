@@ -38,7 +38,7 @@ public class ReportService {
     }
 
     public List<ReportResponseInstance> getActiveReports() {
-        List<Report> reports = reportDao.findReportByActive(true);
+        List<Report> reports = reportDao.findReportByIsActiveTrue();
         List<ReportResponseInstance> toBeReturned = new ArrayList<>();
         for (Report report: reports){
             CommentResponse comment = new CommentResponse(commentDao.findCommentById(report.getCommentId()));

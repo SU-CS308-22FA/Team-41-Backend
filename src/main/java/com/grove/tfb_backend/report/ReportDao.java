@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ReportDao extends JpaRepository<Report, Long> {
-    List<Report> findReportByActive(boolean active);
+    List<Report> findReportByIsActiveTrue();
     Report findReportById(Long id);
 }
