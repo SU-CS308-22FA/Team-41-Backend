@@ -22,6 +22,13 @@ public class FeedbackService {
         this.usersDao = usersDao;
     }
 
+    /**
+     * Saves user feedback.
+     *
+     * @param feedback the feedback request containing the user's ID and the feedback topic and body
+     *
+     * @throws IllegalStateException if the user is not found
+     */
     @Transactional
     public void feedback(FeedbackRequest feedback) {
         Users user = usersDao.findUserById(feedback.getUserId());
@@ -37,6 +44,11 @@ public class FeedbackService {
 
     }
 
+    /**
+     * Returns all user feedback.
+     *
+     * @return a list of feedback responses, each containing the feedback topic and body
+     */
     public List<FeedbackResponse> getAllFeedback() {
         List<Feedback> feedbacks = feedbackDao.findAll();
         List<FeedbackResponse> toBeReturned = new ArrayList<>();

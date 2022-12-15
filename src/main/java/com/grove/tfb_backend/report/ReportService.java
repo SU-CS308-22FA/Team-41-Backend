@@ -28,6 +28,14 @@ public class ReportService {
         this.usersDao = usersDao;
     }
 
+    /**
+     * Handles a report request.
+     *
+     * @param reportRequest the report request to handle
+     *
+     * @throws IllegalStateException if the reporter or reported user or comment is not found, or if the reporter has already
+     *                               reported the comment, or if the reporter is the same as the reported user
+     */
     public void handleReport(ReportRequest reportRequest) {
         if (!usersDao.existsById(reportRequest.getReporterId())) throw new IllegalStateException("REPORTER NOT FOUND!");
         if (!usersDao.existsById(reportRequest.getReportedUserId())) throw new IllegalStateException("REPORTED USER NOT FOUND!");
@@ -39,6 +47,11 @@ public class ReportService {
         reportDao.save(report);
     }
 
+    /**
+     * Returns a list of active reports.
+     *
+     * @return a list of active reports, each containing the report and the corresponding comment
+     */
     public List<ReportResponseInstance> getActiveReports() {
         List<Report> reports = reportDao.findReportByIsActiveTrue();
         List<ReportResponseInstance> toBeReturned = new ArrayList<>();
@@ -49,6 +62,13 @@ public class ReportService {
         return toBeReturned;
     }
 
+    /**
+     * Closes a report.
+     *
+     * @param req the request to close a report, containing the issuer's ID and the report's ID
+     *
+     * @throws IllegalStateException if the issuer is not an admin or the report is not found
+     */
     @Transactional
     public void closeReport(ReportCloseRequest req) {
         Users user = usersDao.findUserById(req.getIssuerId());
