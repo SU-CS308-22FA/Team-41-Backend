@@ -83,6 +83,19 @@ public class MatchesService {
         return matches;
     }
 
+    /**
+     * this function gets admin id and iinformation of a new match and tries to add that match to DB.
+     *
+     * @param newMatch is an object contain admin id and information of new match
+     *
+     * @throws IllegalStateException if the given admin id does not exist
+     * @throws IllegalStateException if the given admin id is not an admin, it belongs to normal user
+     * @throws IllegalStateException if the given home team information does not exist
+     * @throws IllegalStateException if the given away team information does not exist
+     * @throws IllegalStateException if the given referee information does not exist
+     *
+     * @see AddMatch
+     * */
     public void addMatchByAdmin(AddMatch newMatch) {
         Users admin = usersDao.findUserById(newMatch.getUserId());
         if(admin == null)  throw new IllegalStateException("ADMIN USER NOT FOUND!");
@@ -118,6 +131,14 @@ public class MatchesService {
         Matches matchDb = matchesDao.save(newMatch);
 
     }
+
+    /**
+    * this function get the matches dated as today if there are any.
+     *
+     * @return list of matches, that each match contain all information of that match
+     *
+     * @throws IllegalStateException if there is no match dated as today
+     * */
     public List<Matches> getAllTodaysMatches() {
         String date = LocalDate.now().toString();
         List<Matches> matches = matchesDao.findAllByOrderByDateAndTime();
