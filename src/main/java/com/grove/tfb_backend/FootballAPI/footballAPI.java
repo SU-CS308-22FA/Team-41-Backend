@@ -1,5 +1,7 @@
 package com.grove.tfb_backend.FootballAPI;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.time.LocalDate;
 
 public class footballAPI {
@@ -14,7 +16,8 @@ public class footballAPI {
 
     public static String apiHost = "api-football-v1.p.rapidapi.com";
 
-    public static String apiKey = "";
+    @Value("${apiKey}")
+    public static String apiKey;
 
     public static String[] superligTeamCodes = {"549", "564", "607", "611", "645", "996", "998", "1001", "1002", "1004",
             "1005", "1010", "3563", "3573", "3574", "3575", "3577", "3578", "3589"};
