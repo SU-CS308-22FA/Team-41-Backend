@@ -156,5 +156,21 @@ public class MatchesService {
         return res;
     }
 
+    public Long getId(MatchInfo matchInfoDto) {
+        Long id = matchesDao.findId(matchInfoDto.getDateAndTime(), matchInfoDto.getHomeTeamName(), matchInfoDto.getAwayTeamName());
+        return id;
+    }
 
+    @Transactional
+    public void updateMatch(Long matchId, MatchInfo matchInfoDto) {
+        Matches match = matchesDao.findMatchById(matchId);
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        match.setFinished(matchInfoDto.isFinished());
+        match.setStatus(matchInfoDto.getStatus());
+        match.setResult(matchInfoDto.getResult());
+        match.setGoalAway(matchInfoDto.getGoalAway());
+        match.setGoalHome(matchInfoDto.getGoalHome());
+        match.setDateAndTime(matchInfoDto.getDateAndTime());
+    }
 }

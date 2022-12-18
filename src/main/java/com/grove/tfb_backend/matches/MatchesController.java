@@ -1,9 +1,22 @@
 package com.grove.tfb_backend.matches;
 
+import com.grove.tfb_backend.FootballAPI.fixtures.ResponseFixtures;
+import com.grove.tfb_backend.FootballAPI.fixtures.ReturnedFixtures;
+import com.grove.tfb_backend.FootballAPI.footballAPI;
 import com.grove.tfb_backend.matches.MatchDto.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -102,5 +115,100 @@ public class MatchesController {
             response.setStatus("400: "+e.getMessage());
         }
         return response;
+    }
+
+    @Scheduled(cron = "0 0 */1 ? * *")
+    public void automation() {
+        List<Matches> matchList = matchesService.getAllTodaysMatches();
+        if(matchList.size() > 0) {
+            System.out.println("Found " + matchList.size() + " matches!");
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                String url = footballAPI.getFixtureUrl(LocalDate.now(),"203", "2022");
+                HttpHeaders header = new HttpHeaders();
+                header.set("X-RapidAPI-Key", footballAPI.apiKey);
+                header.set("X-RapidAPI-Host", footballAPI.apiHost);
+                HttpEntity<ReturnedFixtures> request = new HttpEntity<>(header);
+                ResponseEntity<ReturnedFixtures> response = restTemplate.exchange(url, HttpMethod.GET, request, ReturnedFixtures.class);
+
+                for(ResponseFixtures r: response.getBody().getResponse()) {
+                    Instant instant = r.getFixture().getDate().toInstant();
+                    ZoneId zone = ZoneId.of(r.getFixture().getTimezone());
+                    LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+
+                    int homeGoal = (r.getGoals().getHome() == null)? -1: r.getGoals().getHome();
+                    int awayGoal = (r.getGoals().getAway() == null)? -1: r.getGoals().getAway();
+                    String result;
+                    boolean finished = homeGoal != -1;
+                    if(finished) {
+                        if (homeGoal == awayGoal)
+                            result = "draw";
+                        else if (homeGoal > awayGoal)
+                            result = "home winner";
+                        else
+                            result = "away winner";
+                    }
+                    else
+                        result = "none";
+
+                    MatchInfo m = new MatchInfo(r.getTeams().getHome().getName(), r.getTeams().getAway().getName(), r.getFixture().getReferee(),
+                            r.getFixture().getVenue().getCity(), r.getFixture().getVenue().getName(), localDateTime,
+                            r.getFixture().getStatus().get_long(), finished, homeGoal, awayGoal, result,
+                            matchesService.getTeam(r.getTeams().getHome().getName()), matchesService.getTeam(r.getTeams().getAway().getName()),
+                            matchesService.getReferee(r.getFixture().getReferee()));
+
+                    Long id = matchesService.getId(m);  //find real match id
+                    matchesService.updateMatch(id, m);  //update
+                }
+            }
+            catch (Exception e) {
+                System.out.println("Error! couldn't update at " + LocalDateTime.now().toString().replace('T', ' '));
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+
+    //@PostConstruct
+    public void getDataByAPI(){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = footballAPI.getFixtureUrl("203", "2022");
+            HttpHeaders header = new HttpHeaders();
+            header.set("X-RapidAPI-Key", footballAPI.apiKey);
+            header.set("X-RapidAPI-Host", footballAPI.apiHost);
+            HttpEntity<ReturnedFixtures> request = new HttpEntity<>(header);
+            ResponseEntity<ReturnedFixtures> response = restTemplate.exchange(url, HttpMethod.GET, request, ReturnedFixtures.class);
+
+            for(ResponseFixtures r: response.getBody().getResponse()) {
+                Instant instant = r.getFixture().getDate().toInstant();
+                ZoneId zone = ZoneId.of(r.getFixture().getTimezone());
+                LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+                int homeGoal = (r.getGoals().getHome() == null)? -1: r.getGoals().getHome();
+                int awayGoal = (r.getGoals().getAway() == null)? -1: r.getGoals().getAway();
+                String result;
+                boolean finished = homeGoal != -1;
+                if(finished) {
+                    if (homeGoal == awayGoal)
+                        result = "draw";
+                    else if (homeGoal > awayGoal)
+                        result = "home winner";
+                    else
+                        result = "away winner";
+                }
+                else
+                    result = "none";
+                MatchInfo m = new MatchInfo(r.getTeams().getHome().getName(), r.getTeams().getAway().getName(), r.getFixture().getReferee(),
+                        r.getFixture().getVenue().getCity(), r.getFixture().getVenue().getName(), localDateTime,
+                        r.getFixture().getStatus().get_long(), finished, homeGoal, awayGoal, result,
+                        matchesService.getTeam(r.getTeams().getHome().getName()), matchesService.getTeam(r.getTeams().getAway().getName()),
+                        matchesService.getReferee(r.getFixture().getReferee()));
+
+                matchesService.addMatch(m);
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
