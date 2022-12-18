@@ -4,6 +4,7 @@ import com.grove.tfb_backend.FootballAPI.fixtures.ResponseFixtures;
 import com.grove.tfb_backend.FootballAPI.fixtures.ReturnedFixtures;
 import com.grove.tfb_backend.FootballAPI.footballAPI;
 import com.grove.tfb_backend.matches.MatchDto.*;
+import com.grove.tfb_backend.user.userDto.UserInfo;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -37,6 +38,21 @@ public class MatchesController {
         GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
         try{
             matchesService.addMatchByAdmin(newMatch);
+            response.setReturnObject("Match successfully added!");
+        }
+        catch (Exception e){
+            response.setStatus("400");
+            response.setReturnObject(e.getMessage());
+        }
+        return response;
+    }
+
+    @PutMapping("{id}")
+    public GeneralHttpResponse<String> updateResultByAdmin(@PathVariable Long id, @RequestBody UpdateMatch updatedMatch){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
+        try{
+            matchesService.updateResultByAdmin(id, updatedMatch);
+            response.setReturnObject("Match successfully updated!");
         }
         catch (Exception e){
             response.setStatus("400");

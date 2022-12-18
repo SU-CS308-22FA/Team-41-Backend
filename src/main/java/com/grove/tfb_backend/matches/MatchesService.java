@@ -125,6 +125,33 @@ public class MatchesService {
     }
 
     @Transactional
+    public void updateResultByAdmin(Long id, UpdateMatch updatedMatch) {
+        Users admin = usersDao.findUserById(id);
+        if(admin == null)  throw new IllegalStateException("ADMIN NOT FOUND!");
+        if(!admin.isAdmin()) throw new IllegalStateException("NO PERMISSION!");
+
+        Matches match = matchesDao.findMatchById(updatedMatch.getMatchId());
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        Referee ref = refereeDao.findRefereeById(updatedMatch.getRefereeId());
+
+        String result;
+        if(updatedMatch.getHomeGoals() == updatedMatch.getAwayGoals())
+            result = "draw";
+        else if(updatedMatch.getHomeGoals() > updatedMatch.getAwayGoals())
+            result = "home winner";
+        else
+            result = "away winner";
+
+        match.setResult(result);
+        match.setStatus("Match Finished");
+        match.setReferee(ref.getName());
+        match.setRefereeId(ref);
+        match.setGoalHome(updatedMatch.getHomeGoals());
+        match.setGoalAway(updatedMatch.getAwayGoals());
+    }
+
+    @Transactional
     public void addMatch(MatchInfo matchInfoDto) {
 
         Matches newMatch = new Matches(matchInfoDto);

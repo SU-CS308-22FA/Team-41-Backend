@@ -11,13 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddMatch {
+public class UpdateMatch {
 
-    private Long userId;
-
-    private Long homeId;
-
-    private Long awayId;
+    private Long matchId;
 
     private Long refereeId;
 
@@ -25,7 +21,4 @@ public class AddMatch {
 
     private int awayGoals;
 
-    private LocalDateTime date;
-
 }
-
