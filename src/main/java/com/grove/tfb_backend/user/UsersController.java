@@ -207,7 +207,7 @@ public class UsersController {
     }
 
     @GetMapping("{id}/ban_status")
-    public GeneralHttpResponse<String> userInfo(@PathVariable Long id){
+    public GeneralHttpResponse<String> banInfo(@PathVariable Long id){
         GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
 
         try{
