@@ -258,7 +258,7 @@ public class UsersService {
 
         if (user == null) throw new IllegalStateException("USER NOT FOUND!");
 
-        return user.isActive();
+        return !user.isActive();
     }
 
 }
