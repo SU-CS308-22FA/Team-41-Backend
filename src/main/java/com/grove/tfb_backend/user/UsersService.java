@@ -248,7 +248,7 @@ public class UsersService {
         Users user = usersDao.findUserById(userId);
         if(user == null) throw new IllegalStateException("USER NOT FOUND!");
         if(user.isAdmin()) throw new IllegalStateException("YOU CANNOT BAN AN ADMIN!");
-        if(!user.isActive()) throw new IllegalStateException("ALREADY BANNED!");
+        if(user.isActive()) throw new IllegalStateException("ALREADY ACTIVE!");
 
         user.setActive(true);
     }
