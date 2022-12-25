@@ -179,7 +179,7 @@ public class UsersController {
     }
 
     @PutMapping("/{adminId}/ban/{userId}")
-    public GeneralHttpResponse<String> updateUser(@PathVariable Long adminId,@PathVariable Long userId){
+    public GeneralHttpResponse<String> banUser(@PathVariable Long adminId,@PathVariable Long userId){
         GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200","USER INFORMATION UPDATED SUCCESSFULLY!");
         try{
             usersService.banUser(adminId, userId);
@@ -188,6 +188,34 @@ public class UsersController {
             response.setReturnObject(e.getMessage());
             response.setStatus("400");
 
+        }
+        return response;
+    }
+
+    @PutMapping("/{adminId}/unban/{userId}")
+    public GeneralHttpResponse<String> unbanUser(@PathVariable Long adminId,@PathVariable Long userId){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200","USER INFORMATION UPDATED SUCCESSFULLY!");
+        try{
+            usersService.unbanUser(adminId, userId);
+        }
+        catch (Exception e){
+            response.setReturnObject(e.getMessage());
+            response.setStatus("400");
+
+        }
+        return response;
+    }
+
+    @GetMapping("{id}/ban_status")
+    public GeneralHttpResponse<String> userInfo(@PathVariable Long id){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
+
+        try{
+            response.setReturnObject(usersService.isBanned(id)? "banned": "not banned");
+        }
+        catch (Exception e){
+            response.setStatus("400");
+            response.setReturnObject(e.getMessage());
         }
         return response;
     }

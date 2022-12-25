@@ -239,4 +239,26 @@ public class UsersService {
         user.setActive(false);
     }
 
+    @Transactional
+    public void unbanUser(Long adminId, Long userId) {
+        Users admin = usersDao.findUserById(adminId);
+        if(admin == null)  throw new IllegalStateException("ADMIN USER NOT FOUND!");
+        if(!admin.isAdmin()) throw new IllegalStateException("NO PERMISSION!");
+
+        Users user = usersDao.findUserById(userId);
+        if(user == null) throw new IllegalStateException("USER NOT FOUND!");
+        if(user.isAdmin()) throw new IllegalStateException("YOU CANNOT BAN AN ADMIN!");
+        if(!user.isActive()) throw new IllegalStateException("ALREADY BANNED!");
+
+        user.setActive(true);
+    }
+
+    public boolean isBanned(Long userId) {
+        Users user = usersDao.findUserById(userId);
+
+        if (user == null) throw new IllegalStateException("USER NOT FOUND!");
+
+        return user.isActive();
+    }
+
 }
