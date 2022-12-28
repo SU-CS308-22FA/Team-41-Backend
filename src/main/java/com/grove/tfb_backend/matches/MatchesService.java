@@ -111,15 +111,22 @@ public class MatchesService {
         if(ref == null) throw new IllegalStateException("REFEREE NOT FOUND!");
 
         String result;
-        if(newMatch.getHomeGoals() == newMatch.getAwayGoals())
-            result = "draw";
+        String status = "Match Finished";
+        if(newMatch.getHomeGoals() == newMatch.getAwayGoals()) {
+            if(newMatch.getHomeGoals() == -1) {
+                status = "Time to be defined";
+                result = "none";
+            }
+            else
+                result = "draw";
+        }
         else if(newMatch.getHomeGoals() > newMatch.getAwayGoals())
             result = "home winner";
         else
             result = "away winner";
 
         MatchInfo match = new MatchInfo(home.getName(), away.getName(), ref.getName(), home.getCity(),
-                                        home.getStadiumName(), newMatch.getDate(), "Match Finished", true,
+                                        home.getStadiumName(), newMatch.getDate(), status, true,
                                         newMatch.getHomeGoals(), newMatch.getAwayGoals(), result, home, away, ref);
         addMatch(match);
     }
