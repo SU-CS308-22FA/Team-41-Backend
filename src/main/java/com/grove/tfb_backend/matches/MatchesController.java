@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -133,20 +134,19 @@ public class MatchesController {
         return response;
     }
 
-    @Scheduled(cron = "0 0 */1 ? * *")
+    //runs at these times every day 00:00:00, 06:00:00, 12:00:00, 18:00:00
+    @Scheduled(cron = "0 0 0,6,12,18 ? * *")
     public void automation() {
-        List<Matches> matchList = matchesService.getAllTodaysMatches();
-        if(matchList.size() > 0) {
-            System.out.println("Found " + matchList.size() + " matches!");
-            try {
-                RestTemplate restTemplate = new RestTemplate();
-                String url = footballAPI.getFixtureUrl(LocalDate.now(),"203", "2022");
-                HttpHeaders header = new HttpHeaders();
-                header.set("X-RapidAPI-Key", footballAPI.apiKey);
-                header.set("X-RapidAPI-Host", footballAPI.apiHost);
-                HttpEntity<ReturnedFixtures> request = new HttpEntity<>(header);
-                ResponseEntity<ReturnedFixtures> response = restTemplate.exchange(url, HttpMethod.GET, request, ReturnedFixtures.class);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = footballAPI.getFixtureUrl(LocalDate.now(),"203", "2022");
+            HttpHeaders header = new HttpHeaders();
+            header.set("X-RapidAPI-Key", footballAPI.apiKey);
+            header.set("X-RapidAPI-Host", footballAPI.apiHost);
+            HttpEntity<ReturnedFixtures> request = new HttpEntity<>(header);
+            ResponseEntity<ReturnedFixtures> response = restTemplate.exchange(url, HttpMethod.GET, request, ReturnedFixtures.class);
 
+            if(response.getBody().getResults() != 0) {
                 for(ResponseFixtures r: response.getBody().getResponse()) {
                     Instant instant = r.getFixture().getDate().toInstant();
                     ZoneId zone = ZoneId.of(r.getFixture().getTimezone());
@@ -167,20 +167,18 @@ public class MatchesController {
                     else
                         result = "none";
 
-                    MatchInfo m = new MatchInfo(r.getTeams().getHome().getName(), r.getTeams().getAway().getName(), r.getFixture().getReferee(),
-                            r.getFixture().getVenue().getCity(), r.getFixture().getVenue().getName(), localDateTime,
-                            r.getFixture().getStatus().get_long(), finished, homeGoal, awayGoal, result,
-                            matchesService.getTeam(r.getTeams().getHome().getName()), matchesService.getTeam(r.getTeams().getAway().getName()),
-                            matchesService.getReferee(r.getFixture().getReferee()));
+                    MatchAutoUpdate matchUpdate = new MatchAutoUpdate(
+                            r.getFixture().getVenue().getCity(), r.getFixture().getVenue().getName(), homeGoal, awayGoal,
+                            localDateTime, result, r.getFixture().getStatus().getLong_(), finished, r.getFixture().getId()
+                    );
 
-                    Long id = matchesService.getId(m);  //find real match id
-                    matchesService.updateMatch(id, m);  //update
+                    matchesService.updateMatchAuto(matchUpdate);
                 }
             }
-            catch (Exception e) {
-                System.out.println("Error! couldn't update at " + LocalDateTime.now().toString().replace('T', ' '));
-                System.out.println(e.getMessage());
-            }
+        }
+        catch (Exception e) {
+            System.out.println("Error! couldn't update at " + LocalDateTime.now().toString().replace('T', ' '));
+            System.out.println(e.getMessage());
         }
     }
 
@@ -204,6 +202,16 @@ public class MatchesController {
                 int awayGoal = (r.getGoals().getAway() == null)? -1: r.getGoals().getAway();
                 String result;
                 boolean finished = homeGoal != -1;
+                String ref = r.getFixture().getReferee();
+                if(ref != null)  {
+                    int idx = ref.indexOf(',');
+                    int cIdx = (idx != -1)? idx: ref.length() - 1;
+                    ref = ref.substring(0, cIdx);
+
+                    if(ref.equals("B. Şimşe") || ref.equals("B. Şimşek")) {
+                        ref = "Bahattin Simsek";
+                    }
+                }
                 if(finished) {
                     if (homeGoal == awayGoal)
                         result = "draw";
@@ -214,11 +222,12 @@ public class MatchesController {
                 }
                 else
                     result = "none";
-                MatchInfo m = new MatchInfo(r.getTeams().getHome().getName(), r.getTeams().getAway().getName(), r.getFixture().getReferee(),
+
+                MatchInfo m = new MatchInfo(r.getTeams().getHome().getName(), r.getTeams().getAway().getName(), ref,
                         r.getFixture().getVenue().getCity(), r.getFixture().getVenue().getName(), localDateTime,
-                        r.getFixture().getStatus().get_long(), finished, homeGoal, awayGoal, result,
+                        r.getFixture().getStatus().getLong_(), finished, homeGoal, awayGoal, result,
                         matchesService.getTeam(r.getTeams().getHome().getName()), matchesService.getTeam(r.getTeams().getAway().getName()),
-                        matchesService.getReferee(r.getFixture().getReferee()));
+                        matchesService.getReferee(ref), r.getFixture().getId());
 
                 matchesService.addMatch(m);
             }

@@ -120,7 +120,7 @@ public class MatchesService {
 
         MatchInfo match = new MatchInfo(home.getName(), away.getName(), ref.getName(), home.getCity(),
                                         home.getStadiumName(), newMatch.getDate(), "Match Finished", true,
-                                        newMatch.getHomeGoals(), newMatch.getAwayGoals(), result, home, away, ref);
+                                        newMatch.getHomeGoals(), newMatch.getAwayGoals(), result, home, away, ref, -1);
         addMatch(match);
     }
 
@@ -149,6 +149,21 @@ public class MatchesService {
         match.setRefereeId(ref);
         match.setGoalHome(updatedMatch.getHomeGoals());
         match.setGoalAway(updatedMatch.getAwayGoals());
+    }
+
+    @Transactional
+    void updateMatchAuto(MatchAutoUpdate matchUpdate) {
+        Matches match = matchesDao.findMatchesByApiID(matchUpdate.getApiID());
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        match.setCity(matchUpdate.getCity());
+        match.setStadiumName(matchUpdate.getStadiumName());
+        match.setGoalHome(matchUpdate.getHomeGoals());
+        match.setGoalAway(matchUpdate.getAwayGoals());
+        match.setDateAndTime(matchUpdate.getDate());
+        match.setResult(matchUpdate.getResult());
+        match.setStatus(matchUpdate.getStatus());
+        match.setFinished(matchUpdate.isFinished());
     }
 
     @Transactional

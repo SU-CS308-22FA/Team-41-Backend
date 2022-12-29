@@ -59,6 +59,7 @@ public class Matches {
     @JsonIgnore
     private List<Comment> comments;
 
+    private int apiID;
 
     public Matches(MatchInfo matchInfoDto) {
         homeTeamName = matchInfoDto.getHomeTeamName();
@@ -75,6 +76,7 @@ public class Matches {
         home_team = matchInfoDto.getHome_team();
         away_team = matchInfoDto.getAway_team();
         refereeId = matchInfoDto.getRefereeId();
+        apiID = matchInfoDto.getApiID();
     }
 
 

@@ -43,4 +43,6 @@ public class MatchInfo {
 
     private Referee refereeId;
 
+    private int apiID;
+
 }

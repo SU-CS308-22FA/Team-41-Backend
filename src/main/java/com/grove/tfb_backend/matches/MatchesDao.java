@@ -24,4 +24,6 @@ public interface MatchesDao extends JpaRepository<Matches,Long> {
     Long findId(@Param("time") LocalDateTime time, @Param("home") String home, @Param("away") String away);
 
     Matches findMatchById(Long id);
+
+    Matches findMatchesByApiID(int apiID);
 }
