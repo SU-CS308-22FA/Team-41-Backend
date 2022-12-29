@@ -111,8 +111,17 @@ public class MatchesService {
         if(ref == null) throw new IllegalStateException("REFEREE NOT FOUND!");
 
         String result;
-        if(newMatch.getHomeGoals() == newMatch.getAwayGoals())
-            result = "draw";
+        String status = "Match Finished";
+        boolean isFinished = true;
+        if(newMatch.getHomeGoals() == newMatch.getAwayGoals()) {
+            if(newMatch.getHomeGoals() == -1) {
+                status = "Time to be defined";
+                result = "none";
+                isFinished = false;
+            }
+            else
+                result = "draw";
+        }
         else if(newMatch.getHomeGoals() > newMatch.getAwayGoals())
             result = "home winner";
         else
