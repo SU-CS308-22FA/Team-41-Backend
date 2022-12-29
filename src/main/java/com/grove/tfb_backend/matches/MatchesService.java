@@ -112,10 +112,12 @@ public class MatchesService {
 
         String result;
         String status = "Match Finished";
+        boolean isFinished = true;
         if(newMatch.getHomeGoals() == newMatch.getAwayGoals()) {
             if(newMatch.getHomeGoals() == -1) {
                 status = "Time to be defined";
                 result = "none";
+                isFinished = false;
             }
             else
                 result = "draw";
@@ -126,7 +128,7 @@ public class MatchesService {
             result = "away winner";
 
         MatchInfo match = new MatchInfo(home.getName(), away.getName(), ref.getName(), home.getCity(),
-                                        home.getStadiumName(), newMatch.getDate(), status, true,
+                                        home.getStadiumName(), newMatch.getDate(), status, isFinished,
                                         newMatch.getHomeGoals(), newMatch.getAwayGoals(), result, home, away, ref);
         addMatch(match);
     }
