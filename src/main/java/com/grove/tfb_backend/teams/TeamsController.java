@@ -1,18 +1,8 @@
 package com.grove.tfb_backend.teams;
 
-//import com.grove.tfb_backend.footballAPI;
 import com.grove.tfb_backend.teams.TeamDto.*;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-/*
-import javax.annotation.PostConstruct;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-*/
 import java.util.List;
 
 @CrossOrigin
@@ -51,32 +41,4 @@ public class TeamsController {
         }
         return response;
     }
-
-    /*
-    //@PostConstruct
-    public void getDataByAPI(){
-        try{
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api-football-v1.p.rapidapi.com/v3/teams?league=203&season=2022"))
-                    .header("X-RapidAPI-Key", footballAPI.apiKey)
-                    .header("X-RapidAPI-Host", footballAPI.apiHost)
-                    .method("GET", HttpRequest.BodyPublishers.noBody())
-                    .build();
-
-            HttpResponse<String> _response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            JSONArray jsonArray = new JSONObject(_response.body()).getJSONArray("response");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject tmp = jsonArray.getJSONObject(i);
-                JSONObject teamPart = tmp.getJSONObject("team");
-                String teamName = teamPart.getString("name");
-                String logo = teamPart.getString("logo");
-                JSONObject venuePart = tmp.getJSONObject("venue");
-                String stadiumName = venuePart.getString("name");
-                String city = venuePart.getString("city");
-                TeamInfo T = new TeamInfo(teamName, city, stadiumName, logo);
-                teamsService.addTeam(T);
-            }
-        }
-        catch (Exception e){}
-    }*/
 }

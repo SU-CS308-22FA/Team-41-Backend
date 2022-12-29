@@ -128,9 +128,51 @@ public class MatchesService {
             result = "away winner";
 
         MatchInfo match = new MatchInfo(home.getName(), away.getName(), ref.getName(), home.getCity(),
-                                        home.getStadiumName(), newMatch.getDate(), status, isFinished,
-                                        newMatch.getHomeGoals(), newMatch.getAwayGoals(), result, home, away, ref);
+                                        home.getStadiumName(), newMatch.getDate(), "Match Finished", true,
+                                        newMatch.getHomeGoals(), newMatch.getAwayGoals(), result, home, away, ref, -1);
         addMatch(match);
+    }
+
+    @Transactional
+    public void updateResultByAdmin(Long id, UpdateMatch updatedMatch) {
+        Users admin = usersDao.findUserById(id);
+        if(admin == null)  throw new IllegalStateException("ADMIN NOT FOUND!");
+        if(!admin.isAdmin()) throw new IllegalStateException("NO PERMISSION!");
+
+        Matches match = matchesDao.findMatchById(updatedMatch.getMatchId());
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        Referee ref = refereeDao.findRefereeById(updatedMatch.getRefereeId());
+
+        String result;
+        if(updatedMatch.getHomeGoals() == updatedMatch.getAwayGoals())
+            result = "draw";
+        else if(updatedMatch.getHomeGoals() > updatedMatch.getAwayGoals())
+            result = "home winner";
+        else
+            result = "away winner";
+
+        match.setResult(result);
+        match.setStatus("Match Finished");
+        match.setReferee(ref.getName());
+        match.setRefereeId(ref);
+        match.setGoalHome(updatedMatch.getHomeGoals());
+        match.setGoalAway(updatedMatch.getAwayGoals());
+    }
+
+    @Transactional
+    void updateMatchAuto(MatchAutoUpdate matchUpdate) {
+        Matches match = matchesDao.findMatchesByApiID(matchUpdate.getApiID());
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        match.setCity(matchUpdate.getCity());
+        match.setStadiumName(matchUpdate.getStadiumName());
+        match.setGoalHome(matchUpdate.getHomeGoals());
+        match.setGoalAway(matchUpdate.getAwayGoals());
+        match.setDateAndTime(matchUpdate.getDate());
+        match.setResult(matchUpdate.getResult());
+        match.setStatus(matchUpdate.getStatus());
+        match.setFinished(matchUpdate.isFinished());
     }
 
     @Transactional
@@ -165,5 +207,21 @@ public class MatchesService {
         return res;
     }
 
+    public Long getId(MatchInfo matchInfoDto) {
+        Long id = matchesDao.findId(matchInfoDto.getDateAndTime(), matchInfoDto.getHomeTeamName(), matchInfoDto.getAwayTeamName());
+        return id;
+    }
 
+    @Transactional
+    public void updateMatch(Long matchId, MatchInfo matchInfoDto) {
+        Matches match = matchesDao.findMatchById(matchId);
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        match.setFinished(matchInfoDto.isFinished());
+        match.setStatus(matchInfoDto.getStatus());
+        match.setResult(matchInfoDto.getResult());
+        match.setGoalAway(matchInfoDto.getGoalAway());
+        match.setGoalHome(matchInfoDto.getGoalHome());
+        match.setDateAndTime(matchInfoDto.getDateAndTime());
+    }
 }
