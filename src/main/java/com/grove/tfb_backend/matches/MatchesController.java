@@ -137,6 +137,7 @@ public class MatchesController {
     //runs at these times every day 00:00:00, 06:00:00, 12:00:00, 18:00:00
     @Scheduled(cron = "0 0 0,6,12,18 ? * *")
     public void automation() {
+        System.out.println("Running matchDB automation at " + LocalDateTime.now().toString().replace('T', ' '));
         try {
             RestTemplate restTemplate = new RestTemplate();
             String url = footballAPI.getFixtureUrl(LocalDate.now(),"203", "2022");
@@ -174,6 +175,10 @@ public class MatchesController {
 
                     matchesService.updateMatchAuto(matchUpdate);
                 }
+                System.out.println("Successfully updated at " + LocalDateTime.now().toString().replace('T', ' '));
+            }
+            else {
+                System.out.println("No matches to update at " + LocalDateTime.now().toString().replace('T', ' '));
             }
         }
         catch (Exception e) {
