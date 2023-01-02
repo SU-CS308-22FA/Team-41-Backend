@@ -16,7 +16,6 @@ public class footballAPI {
 
     public static String apiHost = "api-football-v1.p.rapidapi.com";
 
-    //@Value("${apiKey}")
     public static String apiKey = System.getenv("apiKey");
 
     public static String[] superligTeamCodes = {"549", "564", "607", "611", "645", "996", "998", "1001", "1002", "1004",
