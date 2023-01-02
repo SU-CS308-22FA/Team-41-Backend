@@ -133,6 +133,11 @@ public class MatchesController {
         }
         return response;
     }
+    
+    @Scheduled(cron = "0 */1 * ? * *")
+    public void testApiKey() {
+        System.out.println(footballAPI.apiKey);
+    }
 
     //runs at these times every day 00:00:00, 06:00:00, 12:00:00, 18:00:00
     @Scheduled(cron = "0 0 0,6,12,18 ? * *")
