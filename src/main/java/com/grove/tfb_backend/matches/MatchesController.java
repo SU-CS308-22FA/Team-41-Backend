@@ -188,7 +188,7 @@ public class MatchesController {
     }
 
 
-    @PostConstruct
+    //@PostConstruct
     public void getDataByAPI(){
         try {
             RestTemplate restTemplate = new RestTemplate();
