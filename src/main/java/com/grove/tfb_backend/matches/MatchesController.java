@@ -151,7 +151,7 @@ public class MatchesController {
                 for(ResponseFixtures r: response.getBody().getResponse()) {
                     Instant instant = r.getFixture().getDate().toInstant();
                     ZoneId zone = ZoneId.of(r.getFixture().getTimezone());
-                    LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+                    LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone).plusHours(3);
 
                     int homeGoal = (r.getGoals().getHome() == null)? -1: r.getGoals().getHome();
                     int awayGoal = (r.getGoals().getAway() == null)? -1: r.getGoals().getAway();
@@ -188,7 +188,7 @@ public class MatchesController {
     }
 
 
-    //@PostConstruct
+    @PostConstruct
     public void getDataByAPI(){
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -202,7 +202,7 @@ public class MatchesController {
             for(ResponseFixtures r: response.getBody().getResponse()) {
                 Instant instant = r.getFixture().getDate().toInstant();
                 ZoneId zone = ZoneId.of(r.getFixture().getTimezone());
-                LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+                LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone).plusHours(3);
                 int homeGoal = (r.getGoals().getHome() == null)? -1: r.getGoals().getHome();
                 int awayGoal = (r.getGoals().getAway() == null)? -1: r.getGoals().getAway();
                 String result;
