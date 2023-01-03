@@ -39,7 +39,7 @@ public class MailService {
 
         mailMessage.setFrom("emrhn2001@gmail.com");
         mailMessage.setTo(confirmationMail.getMail());
-        mailMessage.setSubject("TFB Registration Confirmation");
+        mailMessage.setSubject("TFP Registration Confirmation");
         mailMessage.setText("Activate your account by clicking this link:  " + confirmationMail.getLink());
         mailSender.send(mailMessage);
     }
@@ -49,7 +49,7 @@ public class MailService {
 
         mailMessage.setFrom("emrhn2001@gmail.com");
         mailMessage.setTo(resetConfirmationMail.getMail());
-        mailMessage.setSubject("TFB Reset Password");
+        mailMessage.setSubject("TFP Reset Password");
         mailMessage.setText(resetConfirmationMail.getBody());
         mailSender.send(mailMessage);
     }
