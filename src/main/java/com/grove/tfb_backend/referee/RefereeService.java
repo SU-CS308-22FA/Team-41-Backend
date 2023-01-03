@@ -1,14 +1,15 @@
 package com.grove.tfb_backend.referee;
 
 
+import com.grove.tfb_backend.matches.Matches;
+import com.grove.tfb_backend.matches.MatchesDao;
 import com.grove.tfb_backend.referee.refereeDto.AllReferees;
 import com.grove.tfb_backend.referee.refereeDto.OneReferee;
+import com.grove.tfb_backend.referee.refereeDto.RefereeVoteRequest;
 import com.grove.tfb_backend.referee.refereeDto.VoteRequest;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,11 @@ public class RefereeService {
 
     private final RefereeDao refereeDao;
 
-    public RefereeService(RefereeDao refereeDao) {
+    private final MatchesDao matchesDao;
+
+    public RefereeService(RefereeDao refereeDao, MatchesDao matchesDao) {
         this.refereeDao = refereeDao;
+        this.matchesDao = matchesDao;
     }
 
 
@@ -53,5 +57,20 @@ public class RefereeService {
 
         return new OneReferee(referee.getId(), referee.getName(),
                 referee.getTotalVote(), referee.getRating(), referee.getMatches());
+    }
+
+    @Transactional
+    public void handleRefereeVote(RefereeVoteRequest voteRequest) {
+        Matches match = matchesDao.findMatchById(voteRequest.getMatchId());
+
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        Referee referee = match.getRefereeId();
+
+        if (referee == null) throw new IllegalStateException("REFEREE NOT FOUND!");
+
+        Long previousTotalVote = referee.getTotalRefereeVote();
+        referee.setRefereeRating((referee.getRefereeRating()* previousTotalVote + voteRequest.getTotalPoints()) / (previousTotalVote+1));
+        referee.setTotalRefereeVote(previousTotalVote+1);
     }
 }

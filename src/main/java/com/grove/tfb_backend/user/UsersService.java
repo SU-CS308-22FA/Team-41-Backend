@@ -70,7 +70,7 @@ public class UsersService {
         if (!user.getPassword().equals(loginRequest.getPassword())) throw new IllegalStateException("WRONG PASSWORD!");
         if(!user.isActive()) throw new IllegalStateException("ACCOUNT IS NOT ACTIVE!");
 
-        return new LoginResponse(user.getId(), user.isAdmin());
+        return new LoginResponse(user.getId(), user.isAdmin(), user.isReferee());
         // JWT will be returned later.
     }
 

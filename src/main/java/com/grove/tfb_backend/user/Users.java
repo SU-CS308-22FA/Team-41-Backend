@@ -32,6 +32,8 @@ public class Users {
 
     private String password;
 
+    private boolean isReferee;
+
     private boolean isActive;
 
     @Column(nullable = true)

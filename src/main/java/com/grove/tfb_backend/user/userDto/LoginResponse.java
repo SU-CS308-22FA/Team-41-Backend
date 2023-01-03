@@ -14,4 +14,5 @@ public class LoginResponse {
 
     private Long id;
     private boolean isAdmin;
+    private boolean isReferee;
 }

@@ -3,6 +3,7 @@ package com.grove.tfb_backend.referee;
 
 import com.grove.tfb_backend.referee.refereeDto.AllReferees;
 import com.grove.tfb_backend.referee.refereeDto.OneReferee;
+import com.grove.tfb_backend.referee.refereeDto.RefereeVoteRequest;
 import com.grove.tfb_backend.referee.refereeDto.VoteRequest;
 import com.grove.tfb_backend.user.userDto.GeneralHttpResponse;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,19 @@ public class RefereeController {
         }
         catch (Exception e){
             response.setStatus("400: "+ e.getMessage());
+        }
+        return response;
+    }
+
+    @PostMapping("/refereeVote")
+    public GeneralHttpResponse<String> handleRefereeVote(@RequestBody RefereeVoteRequest voteRequest){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
+        try{
+            refereeService.handleRefereeVote(voteRequest);
+        }
+        catch (Exception e){
+            response.setReturnObject(e.getMessage());
+            response.setStatus("400");
         }
         return response;
     }

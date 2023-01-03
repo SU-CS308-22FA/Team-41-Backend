@@ -27,6 +27,10 @@ public class Referee {
 
     private Long totalVote;
 
+    private Long totalRefereeVote;
+
+    private Double refereeRating;
+
 
     @OneToMany(mappedBy = "refereeId",cascade = CascadeType.ALL)
     private List<Matches> matches;
