@@ -272,8 +272,8 @@ public class UsersService {
         System.out.println(mail);
         if (user == null) throw new IllegalStateException("MAIL NOT FOUND!");
 
-        ResetConfirmationToken resetConfirmationToken;
-        if(resetConfirmationTokenDao.existsByUser(user)) {
+        ResetConfirmationToken resetConfirmationToken = resetConfirmationTokenDao.findResetConfirmationTokenByUser(user);
+        if(resetConfirmationToken == null) {
             resetConfirmationToken = new ResetConfirmationToken(user);
             resetConfirmationTokenDao.save(resetConfirmationToken);
         }
