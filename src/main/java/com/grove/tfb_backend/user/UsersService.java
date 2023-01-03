@@ -275,7 +275,7 @@ public class UsersService {
         resetConfirmationTokenDao.save(resetConfirmationToken);
 
         String mailBody = "Dear "+user.getName()+","
-                            +"\nClick following link to reset your password: "
+                            +"\n\nClick following link to reset your password: "
                             +"https://tfb308.herokuapp.com/api/v1/user/reset?token="
                             +resetConfirmationToken.getToken()
                             +"\nAfter clicking the link, your password will be: "
