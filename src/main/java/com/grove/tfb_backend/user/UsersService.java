@@ -3,12 +3,13 @@ package com.grove.tfb_backend.user;
 import com.grove.tfb_backend.mailSender.MailService;
 import com.grove.tfb_backend.matches.Matches;
 import com.grove.tfb_backend.matches.MatchesService;
-import com.grove.tfb_backend.teams.TeamDto.TeamInfo;
 import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.teams.TeamsDao;
 import com.grove.tfb_backend.user.confirmationToken.ConfirmationToken;
 import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenDao;
 import com.grove.tfb_backend.user.confirmationToken.confirmationTokenDto.ConfirmationTokenDto;
+import com.grove.tfb_backend.user.resetConfirmationToken.ResetConfirmationToken;
+import com.grove.tfb_backend.user.resetConfirmationToken.ResetConfirmationTokenDao;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,13 +30,15 @@ public class UsersService {
     private final MatchesService matchesService;
 
     private final ConfirmationTokenDao confirmationTokenDao;
+    private final ResetConfirmationTokenDao resetConfirmationTokenDao;
 
-    public UsersService(UsersDao usersDao, MailService mailService, TeamsDao teamsDao, MatchesService matchesService, ConfirmationTokenDao confirmationTokenDao) {
+    public UsersService(UsersDao usersDao, MailService mailService, TeamsDao teamsDao, MatchesService matchesService, ConfirmationTokenDao confirmationTokenDao, ResetConfirmationTokenDao resetConfirmationTokenDao) {
         this.usersDao = usersDao;
         this.mailService = mailService;
         this.teamsDao = teamsDao;
         this.matchesService = matchesService;
         this.confirmationTokenDao = confirmationTokenDao;
+        this.resetConfirmationTokenDao = resetConfirmationTokenDao;
     }
 
     @Transactional
@@ -261,4 +264,24 @@ public class UsersService {
         return !user.isActive();
     }
 
+    public void resetPassword(String email) {
+        Users user = usersDao.findUserByMail(email);
+        if (user == null) throw new IllegalStateException("MAIL NOT FOUND!");
+
+        ResetConfirmationToken resetConfirmationToken = new ResetConfirmationToken(user);
+        resetConfirmationTokenDao.save(resetConfirmationToken);
+
+        String mailBody = "Click following link to reset your password, and your password will be:"
+                            +resetConfirmationToken.getTmpPass()
+                            +"\n\nhttps://tfb308.herokuapp.com/api/v1/user/reset?token="
+                            +resetConfirmationToken.getToken()
+                            +"\nafter logging in please change your password from 'Profile -> Edit Profile -> Change Password'"
+                            +"\n\n\nlink will be expired within 15 minutes!";
+
+        ConfirmationTokenDto confirmationMail = new ConfirmationTokenDto(email, mailBody);
+
+
+
+        mailService.sendSignupConfirmation(confirmationMail);
+    }
 }
