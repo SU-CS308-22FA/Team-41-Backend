@@ -267,6 +267,8 @@ public class UsersService {
     @Transactional
     public void resetPassword(String email) {
         Users user = usersDao.findUserByMail(email);
+        System.out.println(email);
+        System.out.println(user.toString());
         if (user == null) throw new IllegalStateException("MAIL NOT FOUND!");
 
         ResetConfirmationToken resetConfirmationToken = new ResetConfirmationToken(user);
