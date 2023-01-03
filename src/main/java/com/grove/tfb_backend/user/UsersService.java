@@ -268,7 +268,6 @@ public class UsersService {
     public void resetPassword(String email) {
         Users user = usersDao.findUserByMail(email);
         System.out.println(email);
-        System.out.println(user.toString());
         if (!usersDao.existsByMail(email)) throw new IllegalStateException("MAIL NOT FOUND!");
 
         ResetConfirmationToken resetConfirmationToken = new ResetConfirmationToken(user);
