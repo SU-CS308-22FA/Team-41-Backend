@@ -265,10 +265,10 @@ public class UsersService {
     }
 
     @Transactional
-    public void resetPassword(String email) {
-        Users user = usersDao.findUserByMail(email);
-        System.out.println(email);
-        if (!usersDao.existsByMail(email)) throw new IllegalStateException("MAIL NOT FOUND!");
+    public void resetPassword(String mail) {
+        Users user = usersDao.findUserByMail(mail);
+        System.out.println(mail);
+        if (!usersDao.existsByMail(mail)) throw new IllegalStateException("MAIL NOT FOUND!");
 
         ResetConfirmationToken resetConfirmationToken = new ResetConfirmationToken(user);
         resetConfirmationTokenDao.save(resetConfirmationToken);
@@ -280,7 +280,7 @@ public class UsersService {
                             +"\nafter logging in please change your password from 'Profile -> Edit Profile -> Change Password'"
                             +"\n\n\nlink will be expired within 15 minutes!";
 
-        ConfirmationTokenDto confirmationMail = new ConfirmationTokenDto(email, mailBody);
+        ConfirmationTokenDto confirmationMail = new ConfirmationTokenDto(mail, mailBody);
 
 
 
