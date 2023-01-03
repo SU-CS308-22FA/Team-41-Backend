@@ -267,7 +267,8 @@ public class UsersService {
     @Transactional
     public void resetPassword(String mail) {
         Users user = usersDao.findUserByMail(mail);
-        System.out.println(mail);
+        System.out.println(mail.substring(mail.indexOf(':')));
+        System.out.println(usersDao.findUserById(2L).getMail());
         System.out.println(usersDao.findUserById(2L).getMail().equals(mail));
         if (!usersDao.existsByMail(mail)) throw new IllegalStateException("MAIL NOT FOUND!");
 
