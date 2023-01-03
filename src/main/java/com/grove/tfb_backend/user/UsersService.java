@@ -280,7 +280,7 @@ public class UsersService {
                             +resetConfirmationToken.getToken()
                             +"\nAfter clicking the link, your password will be: "
                             +resetConfirmationToken.getTmpPass()
-                            +"\nPlease after logging in please change your password from 'Profile -> Edit Profile -> Change Password'"
+                            +"\nPlease after logging in, change your password from 'Profile -> Edit Profile -> Change Password'"
                             +"\n\n\n*** The link will be expired within 15 minutes!";
 
         ResetConfirmationTokenDto resetConfirmationMail = new ResetConfirmationTokenDto(mail, mailBody);
