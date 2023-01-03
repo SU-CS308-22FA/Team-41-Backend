@@ -10,6 +10,7 @@ import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenDao;
 import com.grove.tfb_backend.user.confirmationToken.confirmationTokenDto.ConfirmationTokenDto;
 import com.grove.tfb_backend.user.resetConfirmationToken.ResetConfirmationToken;
 import com.grove.tfb_backend.user.resetConfirmationToken.ResetConfirmationTokenDao;
+import com.grove.tfb_backend.user.resetConfirmationToken.resetConfirmationTokenDto.ResetConfirmationTokenDto;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -280,10 +281,10 @@ public class UsersService {
                             +"\nafter logging in please change your password from 'Profile -> Edit Profile -> Change Password'"
                             +"\n\n\nlink will be expired within 15 minutes!";
 
-        ConfirmationTokenDto confirmationMail = new ConfirmationTokenDto(mail, mailBody);
+        ResetConfirmationTokenDto resetConfirmationMail = new ResetConfirmationTokenDto(mail, mailBody);
 
 
 
-        mailService.sendSignupConfirmation(confirmationMail);
+        mailService.sendResetPasswordConfirmation(resetConfirmationMail);
     }
 }
