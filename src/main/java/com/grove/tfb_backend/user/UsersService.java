@@ -278,9 +278,7 @@ public class UsersService {
             resetConfirmationTokenDao.save(resetConfirmationToken);
         }
         else {
-            resetConfirmationToken = resetConfirmationTokenDao.findResetConfirmationTokenByUser(user);
-            resetConfirmationToken.setExpiresAt(LocalDateTime.now().plusMinutes(15));
-            resetConfirmationToken.setConfirmed(false);
+            resetConfirmationToken = new ResetConfirmationToken(user);
         }
 
         String mailBody = "Dear "+user.getName()+","
