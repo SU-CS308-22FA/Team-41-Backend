@@ -269,7 +269,7 @@ public class UsersService {
         Users user = usersDao.findUserByMail(email);
         System.out.println(email);
         System.out.println(user.toString());
-        if (user == null) throw new IllegalStateException("MAIL NOT FOUND!");
+        if (!usersDao.existsByMail(email)) throw new IllegalStateException("MAIL NOT FOUND!");
 
         ResetConfirmationToken resetConfirmationToken = new ResetConfirmationToken(user);
         resetConfirmationTokenDao.save(resetConfirmationToken);
