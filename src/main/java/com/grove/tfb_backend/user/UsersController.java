@@ -3,6 +3,7 @@ package com.grove.tfb_backend.user;
 
 import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenService;
+import com.grove.tfb_backend.user.resetConfirmationToken.ResetConfirmationTokenService;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +17,12 @@ public class UsersController {
     private final UsersService usersService;
     private final ConfirmationTokenService confirmationTokenService;
 
+    private final ResetConfirmationTokenService resetConfirmationTokenService;
 
-    public UsersController(UsersService usersService, ConfirmationTokenService confirmationTokenService) {
+    public UsersController(UsersService usersService, ConfirmationTokenService confirmationTokenService, ResetConfirmationTokenService resetConfirmationTokenService) {
         this.usersService = usersService;
         this.confirmationTokenService = confirmationTokenService;
+        this.resetConfirmationTokenService = resetConfirmationTokenService;
     }
 
 
@@ -218,5 +221,30 @@ public class UsersController {
             response.setReturnObject(e.getMessage());
         }
         return response;
+    }
+
+    @PostMapping("reset")
+    public GeneralHttpResponse<String> resetPassword(@RequestBody String email) {
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200","Password Reset Request Received!");
+
+        try{
+            usersService.resetPassword(email);
+        }
+        catch (Exception e){
+            response.setStatus("400");
+            response.setReturnObject(e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("/reset")
+    public String resetPasswordConfirmation(@RequestParam String token){
+        try{
+            resetConfirmationTokenService.mailConfirmation(token);
+        }
+        catch (Exception e){
+            return "Confirmation failed.";
+        }
+        return "You have successfully confirmed your account.";
     }
 }
