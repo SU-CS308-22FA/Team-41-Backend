@@ -3,6 +3,8 @@ package com.grove.tfb_backend.matches;
 import com.grove.tfb_backend.matches.MatchDto.*;
 import com.grove.tfb_backend.referee.Referee;
 import com.grove.tfb_backend.referee.RefereeDao;
+import com.grove.tfb_backend.standings.StandingsService;
+import com.grove.tfb_backend.standings.standingsDto.StandingsUpdate;
 import com.grove.tfb_backend.teams.Teams;
 import com.grove.tfb_backend.teams.TeamsDao;
 import com.grove.tfb_backend.user.Users;
@@ -21,12 +23,14 @@ public class MatchesService {
     private final TeamsDao teamsDao;
     private final UsersDao usersDao;
     private final RefereeDao refereeDao;
+    private final StandingsService standingsService;
 
-    public MatchesService(MatchesDao matchesDao, TeamsDao teamsDao, UsersDao usersDao, RefereeDao refereeDao) {
+    public MatchesService(MatchesDao matchesDao, TeamsDao teamsDao, UsersDao usersDao, RefereeDao refereeDao, StandingsService standingsService) {
         this.matchesDao = matchesDao;
         this.teamsDao = teamsDao;
         this.usersDao = usersDao;
         this.refereeDao = refereeDao;
+        this.standingsService = standingsService;
     }
 
     public SingleMatchResponse getMatchInfo(Long id) {
@@ -164,6 +168,10 @@ public class MatchesService {
     void updateMatchAuto(MatchAutoUpdate matchUpdate) {
         Matches match = matchesDao.findMatchesByApiID(matchUpdate.getApiID());
         if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+
+        StandingsUpdate newStandings = new StandingsUpdate(match.getHome_team().getId(), match.getAway_team().getId(),
+                                                           matchUpdate.getHomeGoals(), matchUpdate.getAwayGoals());
+        standingsService.updateStandings(newStandings);
 
         match.setCity(matchUpdate.getCity());
         match.setStadiumName(matchUpdate.getStadiumName());

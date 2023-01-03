@@ -207,16 +207,7 @@ public class MatchesController {
                 int awayGoal = (r.getGoals().getAway() == null)? -1: r.getGoals().getAway();
                 String result;
                 boolean finished = homeGoal != -1;
-                String ref = r.getFixture().getReferee();
-                if(ref != null)  {
-                    int idx = ref.indexOf(',');
-                    int cIdx = (idx != -1)? idx: ref.length() - 1;
-                    ref = ref.substring(0, cIdx);
-
-                    if(ref.equals("B. Şimşe") || ref.equals("B. Şimşek")) {
-                        ref = "Bahattin Simsek";
-                    }
-                }
+                String ref = getRef(r.getFixture().getReferee());
                 if(finished) {
                     if (homeGoal == awayGoal)
                         result = "draw";
@@ -240,5 +231,58 @@ public class MatchesController {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    //to be used when getting data from api for first time to fill table
+    public String getRef(String in) {
+        if(in == null)
+            return "";
+        if(in.equals("A. Bitigen"))
+            return "Abdulkadir Bitigen";
+        if(in.equals("A. Karaoğlan"))
+            return "Atilla Karaoglan";
+        if(in.equals("A. Kardeşler"))
+            return "Arda Kardesler";
+        if(in.equals("A. Palabıyık"))
+            return "Ali Palabiyik";
+        if(in.equals("A. Şansalan"))
+            return "Ali Sansalan";
+        if(in.equals("B. Şeker"))
+            return "Burak Seker";
+        if(in.equals("B. Şimşek"))
+            return "Bahattin Simsek";
+        if(in.equals("E. Özdamar"))
+            return "Erkan Ozdamar";
+        if(in.equals("H. Göçek"))
+            return "Huseyin Gocek";
+        if(in.equals("H. Meler"))
+            return "Halil Umut Meler";
+        if(in.equals("K. Sağlam"))
+            return "Kadir Saglam";
+        if(in.equals("M. Filiz"))
+            return "Mustafa Kursad Filiz";
+        if(in.equals("M. Güzenge"))
+            return "Mert Guzenge";
+        if(in.equals("M. Kalkavan"))
+            return "Mete Kalkavan";
+        if(in.equals("S. Arslanboğa"))
+            return "Suat Arslanboga";
+        if(in.equals("S. Saka"))
+            return "Sarperbaris Saka";
+        if(in.equals("T. Numanoğlu"))
+            return "Tugay Kaan Numanoglu";
+        if(in.equals("V. Bayarslan"))
+            return "Volkan Bayarslan";
+        if(in.equals("Y. Kol"))
+            return "Yasin Kol";
+        if(in.equals("Y. Uğurlu"))
+            return "Yasar Kemal Ugurlu";
+        if(in.equals("Z. Küçük"))
+            return "Zorbay Kucuk";
+        if(in.equals("Ç. Altay"))
+            return "Cagdas Altay";
+        if(in.equals("Ü. Öztürk"))
+            return "Umit Ozturk";
+        return "";
     }
 }
