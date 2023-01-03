@@ -264,6 +264,7 @@ public class UsersService {
         return !user.isActive();
     }
 
+    @Transactional
     public void resetPassword(String email) {
         Users user = usersDao.findUserByMail(email);
         if (user == null) throw new IllegalStateException("MAIL NOT FOUND!");
