@@ -279,10 +279,14 @@ public class UsersService {
         }
         else {
             if(resetConfirmationToken.isConfirmed()) {
-                resetConfirmationToken = new ResetConfirmationToken(user);
+                ResetConfirmationToken tmp = new ResetConfirmationToken(user);
+
+                resetConfirmationToken.setToken(tmp.getToken());
+                resetConfirmationToken.setTmpPass(tmp.getTmpPass());
+                resetConfirmationToken.setExpiresAt(tmp.getExpiresAt());
+                resetConfirmationToken.setConfirmed(tmp.isConfirmed());
             }
             else {
-                resetConfirmationToken = resetConfirmationTokenDao.findResetConfirmationTokenByUser(user);
                 resetConfirmationToken.setExpiresAt(LocalDateTime.now().plusMinutes(15));
                 resetConfirmationToken.setConfirmed(false);
             }
