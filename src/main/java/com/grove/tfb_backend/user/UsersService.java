@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -271,8 +272,16 @@ public class UsersService {
         System.out.println(mail);
         if (user == null) throw new IllegalStateException("MAIL NOT FOUND!");
 
-        ResetConfirmationToken resetConfirmationToken = new ResetConfirmationToken(user);
-        resetConfirmationTokenDao.save(resetConfirmationToken);
+        ResetConfirmationToken resetConfirmationToken;
+        if(resetConfirmationTokenDao.existsByUser(user)) {
+            resetConfirmationToken = new ResetConfirmationToken(user);
+            resetConfirmationTokenDao.save(resetConfirmationToken);
+        }
+        else {
+            resetConfirmationToken = resetConfirmationTokenDao.findResetConfirmationTokenByUser(user);
+            resetConfirmationToken.setExpiresAt(LocalDateTime.now().plusMinutes(15));
+            resetConfirmationToken.setConfirmed(false);
+        }
 
         String mailBody = "Dear "+user.getName()+","
                             +"\n\nClick following link to reset your password: "
