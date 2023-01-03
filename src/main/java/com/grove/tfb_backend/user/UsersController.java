@@ -243,8 +243,8 @@ public class UsersController {
             resetConfirmationTokenService.mailConfirmation(token);
         }
         catch (Exception e){
-            return "Confirmation failed.";
+            return "Resetting Password failed.";
         }
-        return "You have successfully confirmed your account.";
+        return "You have successfully retested your password.";
     }
 }
