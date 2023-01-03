@@ -228,6 +228,7 @@ public class UsersController {
         GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200","Password Reset Request Received!");
 
         try{
+            System.out.println(email);
             usersService.resetPassword(email);
         }
         catch (Exception e){
