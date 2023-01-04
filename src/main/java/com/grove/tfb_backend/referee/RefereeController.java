@@ -8,6 +8,7 @@ import com.grove.tfb_backend.referee.refereeDto.VoteRequest;
 import com.grove.tfb_backend.user.userDto.GeneralHttpResponse;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -71,6 +72,19 @@ public class RefereeController {
         catch (Exception e){
             response.setReturnObject(e.getMessage());
             response.setStatus("400");
+        }
+        return response;
+    }
+
+    @GetMapping("/refereeSuggestion")
+    public GeneralHttpResponse<List<Referee>> handleSuggestion(@RequestParam Integer matchImportance, @RequestParam Long matchId ){
+        GeneralHttpResponse<List<Referee>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(refereeService.handleSuggestion(matchImportance,matchId));
+        }
+        catch (Exception e){
+
+            response.setStatus("400: "+ e.getMessage());
         }
         return response;
     }

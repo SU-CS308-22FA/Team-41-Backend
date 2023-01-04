@@ -3,15 +3,16 @@ package com.grove.tfb_backend.referee;
 
 import com.grove.tfb_backend.matches.Matches;
 import com.grove.tfb_backend.matches.MatchesDao;
-import com.grove.tfb_backend.referee.refereeDto.AllReferees;
-import com.grove.tfb_backend.referee.refereeDto.OneReferee;
-import com.grove.tfb_backend.referee.refereeDto.RefereeVoteRequest;
-import com.grove.tfb_backend.referee.refereeDto.VoteRequest;
+import com.grove.tfb_backend.referee.refereeDto.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Ref;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -72,5 +73,37 @@ public class RefereeService {
         Long previousTotalVote = referee.getTotalRefereeVote();
         referee.setRefereeRating((referee.getRefereeRating()* previousTotalVote + voteRequest.getTotalPoints()) / (previousTotalVote+1));
         referee.setTotalRefereeVote(previousTotalVote+1);
+    }
+
+    public List<Referee> handleSuggestion(Integer matchImportance, Long matchId) {
+        Matches match = matchesDao.findMatchById(matchId);
+
+        List<Referee> referees = refereeDao.findAll();
+        List<RefPoint> refereePoints = new ArrayList<>();
+        for (Referee ref: referees){
+            RefPoint refc = new RefPoint(ref,ref.getRefereeRating()/40 * 75 + ref.getRating()*5);
+
+            List<Matches> refMatches = ref.getMatches();
+            if (refMatches.get(refMatches.size()-1).getHomeTeamName().equals(match.getHomeTeamName()) || refMatches.get(refMatches.size()-1).getHomeTeamName().equals(match.getAwayTeamName())){
+                refc.setPoints(refc.getPoints()-20);
+            }
+            if (LocalDateTime.now().getDayOfYear() - refMatches.get(refMatches.size()-1).getDateAndTime().getDayOfYear() < 7) {
+                refc.setPoints(refc.getPoints()-10);
+            }
+            refereePoints.add(refc);
+        }
+        refereePoints.sort(Comparator.comparing(RefPoint::getPoints).reversed());
+        List<Referee> suggestions = new ArrayList<>();
+        if (matchImportance.equals(0)){
+            suggestions.add(refereePoints.get(0).getRef());
+            suggestions.add(refereePoints.get(1).getRef());
+            suggestions.add(refereePoints.get(2).getRef());
+        }
+        else {
+            suggestions.add(refereePoints.get(matchImportance-1).getRef());
+            suggestions.add(refereePoints.get(matchImportance).getRef());
+            suggestions.add(refereePoints.get(matchImportance+1).getRef());
+        }
+        return suggestions;
     }
 }
