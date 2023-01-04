@@ -172,10 +172,12 @@ public class MatchesService {
         if(match.isFinished()) throw new IllegalStateException("MATCH ALREADY UPDATED!");
         if(matchUpdate.getDate().compareTo(LocalDateTime.now()) > 0) throw new IllegalStateException("TOO EARLY TO UPDATE!");
 
-        StandingsUpdate newStandings = new StandingsUpdate(match.getHome_team().getId(), match.getAway_team().getId(),
-                                                           matchUpdate.getHomeGoals(), matchUpdate.getAwayGoals());
-        standingsService.updateStandings(newStandings);
-        standingsService.updateRanks();
+        if(matchUpdate.isFinished()) {
+            StandingsUpdate newStandings = new StandingsUpdate(match.getHome_team().getId(), match.getAway_team().getId(),
+                    matchUpdate.getHomeGoals(), matchUpdate.getAwayGoals());
+            standingsService.updateStandings(newStandings);
+            standingsService.updateRanks();
+        }
 
         match.setCity(matchUpdate.getCity());
         match.setStadiumName(matchUpdate.getStadiumName());
