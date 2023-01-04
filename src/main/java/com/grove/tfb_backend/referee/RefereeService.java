@@ -106,4 +106,20 @@ public class RefereeService {
         }
         return suggestions;
     }
+
+    @Transactional
+    public void handleAssign(RefereeAssign refereeAssign) {
+        Matches match = matchesDao.findMatchById(refereeAssign.getMatchId());
+
+        if (match == null) throw new IllegalStateException("MATCH NOT FOUND!");
+        if (match.getRefereeId() != null) throw new IllegalStateException("MATCH ALREADY HAS A REFEREE!");
+
+
+        Referee ref = refereeDao.getReferenceById(refereeAssign.getRefereeId());
+        List<Matches> refMatches = ref.getMatches();
+        if (refMatches.get(refMatches.size()-1).getDateAndTime().isAfter(LocalDateTime.now())) throw new IllegalStateException("REFEREE ALREADY ASSIGNED TO A MATCH NEXT WEEK!");
+        match.setRefereeId(ref);
+        match.setReferee(ref.getName());
+
+    }
 }

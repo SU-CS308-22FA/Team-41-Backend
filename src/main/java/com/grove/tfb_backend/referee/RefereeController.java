@@ -1,10 +1,7 @@
 package com.grove.tfb_backend.referee;
 
 
-import com.grove.tfb_backend.referee.refereeDto.AllReferees;
-import com.grove.tfb_backend.referee.refereeDto.OneReferee;
-import com.grove.tfb_backend.referee.refereeDto.RefereeVoteRequest;
-import com.grove.tfb_backend.referee.refereeDto.VoteRequest;
+import com.grove.tfb_backend.referee.refereeDto.*;
 import com.grove.tfb_backend.user.userDto.GeneralHttpResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -85,6 +82,19 @@ public class RefereeController {
         catch (Exception e){
 
             response.setStatus("400: "+ e.getMessage());
+        }
+        return response;
+    }
+
+    @PutMapping("/assignReferee")
+    public GeneralHttpResponse<String> assignReferee(@RequestBody RefereeAssign refereeAssign){
+        GeneralHttpResponse<String> response = new GeneralHttpResponse<>("200",null);
+        try{
+            refereeService.handleAssign(refereeAssign);
+        }
+        catch (Exception e){
+            response.setReturnObject(e.getMessage());
+            response.setStatus("400");
         }
         return response;
     }
