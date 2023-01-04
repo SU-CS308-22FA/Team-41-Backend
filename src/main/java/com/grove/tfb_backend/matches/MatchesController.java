@@ -134,8 +134,7 @@ public class MatchesController {
         return response;
     }
 
-    //runs at these times every day 00:00:00, 06:00:00, 12:00:00, 18:00:00
-    @Scheduled(cron = "0 0 0,6,12,18 ? * *")
+    @Scheduled(cron = "0 0 */1 ? * *")
     public void automation() {
         System.out.println("Running matchDB automation at " + LocalDateTime.now().toString().replace('T', ' '));
         try {
@@ -148,6 +147,7 @@ public class MatchesController {
             ResponseEntity<ReturnedFixtures> response = restTemplate.exchange(url, HttpMethod.GET, request, ReturnedFixtures.class);
 
             if(response.getBody().getResults() != 0) {
+                System.out.println("Starting to update!");
                 for(ResponseFixtures r: response.getBody().getResponse()) {
                     Instant instant = r.getFixture().getDate().toInstant();
                     ZoneId zone = ZoneId.of(r.getFixture().getTimezone());
@@ -173,7 +173,12 @@ public class MatchesController {
                             localDateTime, result, r.getFixture().getStatus().getLong_(), finished, r.getFixture().getId()
                     );
 
-                    matchesService.updateMatchAuto(matchUpdate);
+                    try {
+                        matchesService.updateMatchAuto(matchUpdate);
+                    }
+                    catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 System.out.println("Successfully updated at " + LocalDateTime.now().toString().replace('T', ' '));
             }
