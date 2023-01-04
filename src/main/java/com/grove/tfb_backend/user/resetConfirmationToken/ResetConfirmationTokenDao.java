@@ -11,5 +11,7 @@ public interface ResetConfirmationTokenDao extends JpaRepository<ResetConfirmati
 
     ResetConfirmationToken findConfirmationTokenByToken(String token);
 
-    ResetConfirmationToken findConfirmationTokenByUser(Users user);
+    boolean existsByUser(Users user);
+
+    ResetConfirmationToken findResetConfirmationTokenByUser(Users user);
 }

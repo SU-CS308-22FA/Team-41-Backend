@@ -10,11 +10,13 @@ import com.grove.tfb_backend.user.confirmationToken.ConfirmationTokenDao;
 import com.grove.tfb_backend.user.confirmationToken.confirmationTokenDto.ConfirmationTokenDto;
 import com.grove.tfb_backend.user.resetConfirmationToken.ResetConfirmationToken;
 import com.grove.tfb_backend.user.resetConfirmationToken.ResetConfirmationTokenDao;
+import com.grove.tfb_backend.user.resetConfirmationToken.resetConfirmationTokenDto.ResetConfirmationTokenDto;
 import com.grove.tfb_backend.user.userDto.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -264,24 +266,45 @@ public class UsersService {
         return !user.isActive();
     }
 
-    public void resetPassword(String email) {
-        Users user = usersDao.findUserByMail(email);
+    @Transactional
+    public void resetPassword(String mail) {
+        Users user = usersDao.findUserByMail(mail);
+        System.out.println(mail);
         if (user == null) throw new IllegalStateException("MAIL NOT FOUND!");
 
-        ResetConfirmationToken resetConfirmationToken = new ResetConfirmationToken(user);
-        resetConfirmationTokenDao.save(resetConfirmationToken);
+        ResetConfirmationToken resetConfirmationToken = resetConfirmationTokenDao.findResetConfirmationTokenByUser(user);
+        if(resetConfirmationToken == null) {
+            resetConfirmationToken = new ResetConfirmationToken(user);
+            resetConfirmationTokenDao.save(resetConfirmationToken);
+        }
+        else {
+            if(resetConfirmationToken.isConfirmed()) {
+                ResetConfirmationToken tmp = new ResetConfirmationToken(user);
 
-        String mailBody = "Click following link to reset your password, and your password will be:"
-                            +resetConfirmationToken.getTmpPass()
-                            +"\n\nhttps://tfb308.herokuapp.com/api/v1/user/reset?token="
+                resetConfirmationToken.setToken(tmp.getToken());
+                resetConfirmationToken.setTmpPass(tmp.getTmpPass());
+                resetConfirmationToken.setExpiresAt(tmp.getExpiresAt());
+                resetConfirmationToken.setConfirmed(tmp.isConfirmed());
+            }
+            else {
+                resetConfirmationToken.setExpiresAt(LocalDateTime.now().plusMinutes(15));
+                resetConfirmationToken.setConfirmed(false);
+            }
+        }
+
+        String mailBody = "Dear "+user.getName()+","
+                            +"\n\nClick following link to reset your password: "
+                            +"https://tfb308.herokuapp.com/api/v1/user/reset?token="
                             +resetConfirmationToken.getToken()
-                            +"\nafter logging in please change your password from 'Profile -> Edit Profile -> Change Password'"
-                            +"\n\n\nlink will be expired within 15 minutes!";
+                            +"\nAfter clicking the link, your password will be: "
+                            +resetConfirmationToken.getTmpPass()
+                            +"\nPlease after logging in, change your password from 'Profile -> Edit Profile -> Change Password'"
+                            +"\n\n\n*** The link will be expired within 15 minutes!";
 
-        ConfirmationTokenDto confirmationMail = new ConfirmationTokenDto(email, mailBody);
+        ResetConfirmationTokenDto resetConfirmationMail = new ResetConfirmationTokenDto(mail, mailBody);
 
 
 
-        mailService.sendSignupConfirmation(confirmationMail);
+        mailService.sendResetPasswordConfirmation(resetConfirmationMail);
     }
 }
