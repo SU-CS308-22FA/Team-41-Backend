@@ -156,7 +156,7 @@ public class MatchesController {
                     int homeGoal = (r.getGoals().getHome() == null)? -1: r.getGoals().getHome();
                     int awayGoal = (r.getGoals().getAway() == null)? -1: r.getGoals().getAway();
                     String result;
-                    boolean finished = homeGoal != -1;
+                    boolean finished = r.getFixture().getStatus().getLong_().equals("Match Finished");
                     if(finished) {
                         if (homeGoal == awayGoal)
                             result = "draw";

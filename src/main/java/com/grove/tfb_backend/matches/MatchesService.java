@@ -175,8 +175,10 @@ public class MatchesService {
         if(matchUpdate.isFinished()) {
             StandingsUpdate newStandings = new StandingsUpdate(match.getHome_team().getId(), match.getAway_team().getId(),
                     matchUpdate.getHomeGoals(), matchUpdate.getAwayGoals());
+
             standingsService.updateStandings(newStandings);
             standingsService.updateRanks();
+            System.out.println("updating standings for match of "+match.getHomeTeamName()+" "+match.getAwayTeamName());
         }
 
         match.setCity(matchUpdate.getCity());
