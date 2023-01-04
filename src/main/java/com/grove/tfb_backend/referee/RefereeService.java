@@ -44,7 +44,7 @@ public class RefereeService {
 
         List<AllReferees> toBeReturned = new ArrayList<>();
         for(Referee r: referees){
-            AllReferees newReferee = new AllReferees(r.getId(),r.getName(),r.getRating(),r.getTotalVote());
+            AllReferees newReferee = new AllReferees(r.getId(),r.getName(),r.getRating(),r.getTotalVote(),r.getTotalRefereeVote(),r.getRefereeRating());
             toBeReturned.add(newReferee);
         }
         return toBeReturned;

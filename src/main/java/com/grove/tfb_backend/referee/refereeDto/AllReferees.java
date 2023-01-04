@@ -20,4 +20,7 @@ public class AllReferees {
 
     private Long totalVote;
 
+    private Long totalRefereeVote;
+
+    private Double refereeRating;
 }
