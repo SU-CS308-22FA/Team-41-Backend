@@ -30,6 +30,15 @@ public class StandingsService {
     }
 
     @Transactional
+    public void updateRanks() {
+        List<Standings> table = standingsDao.findAll(Sort.by("points").descending().and(Sort.by("average").descending()));
+        for(int i = 0; i < table.size(); i++) {
+            table.get(i).setRank(i+1);
+        }
+        standingsDao.saveAll(table);
+    }
+
+    @Transactional
     public void updateStandings(StandingsUpdate s){
         Integer hGoal = s.getHomeGoal();
         Integer aGoal = s.getAwayGoal();
