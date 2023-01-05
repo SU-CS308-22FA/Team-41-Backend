@@ -1,6 +1,7 @@
 package com.grove.tfb_backend.referee;
 
 
+import com.grove.tfb_backend.matches.Matches;
 import com.grove.tfb_backend.referee.refereeDto.*;
 import com.grove.tfb_backend.user.userDto.GeneralHttpResponse;
 import org.springframework.web.bind.annotation.*;
@@ -95,6 +96,19 @@ public class RefereeController {
         catch (Exception e){
             response.setReturnObject(e.getMessage());
             response.setStatus("400");
+        }
+        return response;
+    }
+
+    @GetMapping("/lastMatches")
+    public GeneralHttpResponse<List<Matches>> getLastMatches(){
+        GeneralHttpResponse<List<Matches>> response = new GeneralHttpResponse<>("200",null);
+        try{
+            response.setReturnObject(refereeService.handleLastMatches());
+        }
+        catch (Exception e){
+
+            response.setStatus("400: "+ e.getMessage());
         }
         return response;
     }

@@ -115,11 +115,28 @@ public class RefereeService {
         if (match.getRefereeId() != null) throw new IllegalStateException("MATCH ALREADY HAS A REFEREE!");
 
 
-        Referee ref = refereeDao.getReferenceById(refereeAssign.getRefereeId());
+        Referee ref = refereeDao.findRefereeById(refereeAssign.getRefereeId());
         List<Matches> refMatches = ref.getMatches();
         if (refMatches.get(refMatches.size()-1).getDateAndTime().isAfter(LocalDateTime.now())) throw new IllegalStateException("REFEREE ALREADY ASSIGNED TO A MATCH NEXT WEEK!");
         match.setRefereeId(ref);
         match.setReferee(ref.getName());
 
+    }
+
+    public List<Matches> handleLastMatches() {
+        List<Matches> toBeReturned = new ArrayList<>();
+
+        List<Referee> getAll = refereeDao.findAll();
+
+        for (Referee ref: getAll){
+            List<Matches> refMatches = ref.getMatches();
+            if (refMatches.get(refMatches.size()-1).getDateAndTime().isAfter(LocalDateTime.now())){
+                toBeReturned.add(refMatches.get(refMatches.size()-2));
+            }
+            else {
+                toBeReturned.add(refMatches.get(refMatches.size()-1));
+            }
+        }
+        return toBeReturned;
     }
 }
